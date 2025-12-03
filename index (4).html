@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CITAS NO OTORGADAS</title>
+<style>
+  :root{
+    --blue:#0077c8;
+    --blue-dark:#005c99;
+    --light:#f5fbff;
+    --border:#b4c9e7;
+    --success:#28a745;
+    --success-light:#e8f5e9;
+    --error:#e74c3c;
+    --error-light:#fef6f6;
+    --warning:#ffeb3b;
+    --warning-dark:#f2b400;
+    --focus:#4fc3f7;
+    --card-bg:#fff;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg,#e8f1fb,#f8fbff);
+    margin:0;
+    padding:20px;
+    display:flex;
+    justify-content:center;
+  }
+  .wrapper{ width:100%; max-width:880px; }
+  header{ text-align:center; margin-bottom:14px; }
+  header h1{
+    background:var(--blue);
+    color:white;
+    margin:0;
+    padding:14px 18px;
+    border-radius:8px;
+    letter-spacing:0.6px;
+    font-size:20px;
+  }
+  .card{
+    background: var(--card-bg);
+    border-radius:10px;
+    box-shadow:0 6px 24px rgba(0,0,0,0.08);
+    padding:18px;
+    border-top:6px solid var(--blue);
+  }
+  label{ display:block; margin-top:12px; font-weight:700; color:#003b6f; }
+  input, select, textarea, .registro {
+    width:100%;
+    padding:10px;
+    margin-top:6px;
+    border-radius:8px;
+    border:2px solid var(--border);
+    font-size:14px;
+    text-transform:uppercase;
+    background:white;
+    transition: all 0.25s ease;
+  }
+  .registro{
+    text-align:center;
+    background:var(--light);
+    font-weight:700;
+    color:var(--blue);
+    font-size:15px;
+    position: relative;
+    padding-left:28px;
+  }
+  .registro::before {
+    content: "🕒";
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: rotateClock 20s linear infinite;
+  }
+  @keyframes rotateClock {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+  }
+  .row{ display:flex; gap:12px; align-items:flex-end; margin-top:6px; }
+  .col{ flex:1; }
+  .small-btn{
+    display:inline-block;
+    margin-top:8px;
+    padding:6px 10px;
+    border-radius:6px;
+    font-size:12px;
+    cursor:pointer;
+    border:none;
+    transition: all 0.2s ease;
+  }
+  .small-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+  }
+  .fixed{ background:var(--blue); color:white; }
+  .notfixed{ background:var(--border); color:#073a6a; }
+  .fijado-label{ font-size:12px; color:var(--blue); margin-top:6px; font-weight:700; display:none; }
+  .fijado-visible{ display:block; }
+  .check{ color:var(--success); font-size:18px; margin-left:8px; display:none; vertical-align:middle;}
+  .check.visible{ 
+    display:inline-block; 
+    animation: pop .2s ease-out, bounce 0.4s 0.1s ease;
+  }
+  @keyframes pop{ from{transform:scale(0);} to{transform:scale(1);} }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  .btns{ display:flex; gap:10px; margin-top:12px; }
+  .btn{ 
+    flex:1; 
+    padding:10px; 
+    background:var(--blue); 
+    color:white; 
+    border:none; 
+    border-radius:8px; 
+    font-weight:700; 
+    cursor:pointer; 
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,59,111,0.25);
+  }
+  .btn.secondary{ background:var(--blue-dark); }
+  textarea{ 
+    min-height:72px; 
+    resize:vertical; 
+    text-transform:uppercase;
+    transition: all 0.2s ease;
+  }
+  textarea:focus {
+    box-shadow: 0 0 0 2px var(--focus) !important;
+    outline: none;
+  }
+  .note{ font-size:12px; color:#456; margin-top:6px; }
+  /* ✅ ESTILOS MEJORADOS */
+  input:focus, select:focus {
+    border-color: var(--focus) !important;
+    box-shadow: 0 0 0 2px rgba(79, 195, 247, 0.3) !important;
+    outline: none;
+  }
+  .success {
+    border-color: var(--success) !important;
+    background-color: var(--success-light) !important;
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.15) !important;
+    animation: pulseGlow 1.5s infinite;
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(40, 167, 69, 0); }
+  }
+  .incomplete {
+    border-color: var(--warning-dark) !important;
+    background-color: rgba(255, 235, 59, 0.08) !important;
+    box-shadow: 0 0 0 2px rgba(242, 180, 0, 0.1) !important;
+  }
+  .error-field {
+    border-color: var(--error) !important;
+    background-color: var(--error-light) !important;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.15) !important;
+  }
+  .status-msg {
+    font-size: 12px;
+    margin-top: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    animation: fadeInUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform, opacity;
+  }
+  .status-msg.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .status-msg.warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+  .status-msg.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes fadeOutDown {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(10px) scale(0.95); }
+  }
+  @keyframes slideInRight {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  /* 📤 Loader al guardar */
+  .btn.loading {
+    cursor: not-allowed;
+    opacity: 0.8;
+    position: relative;
+    animation: pulseGlow 1.5s infinite;
+  }
+  .btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 16px; height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width:640px){ 
+    .row{ flex-direction:column; } 
+    .registro::before { animation: none; }
+  }
+  /* 🔍 ESTILOS DEL BUSCADOR */
+  .search-container {
+    position: relative;
+    margin-top: 6px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    text-transform: uppercase;
+    background: white;
+    margin-bottom: 8px;
+    z-index: 10;
+    position: relative;
+  }
+  .search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 9;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .search-result-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-transform: uppercase;
+  }
+  .search-result-item:hover, .search-result-item.selected {
+    background-color: var(--blue);
+    color: white;
+  }
+  .search-no-results {
+    padding: 8px 12px;
+    color: #777;
+    text-align: center;
+  }
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    pointer-events: none;
+  }
+  .search-input-wrapper {
+    position: relative;
+  }
+  .search-input-wrapper input {
+    padding-left: 30px;
+  }
+  /* ✏️ Botón de edición temporal */
+  #btnEditarUltimo {
+    background: #28a745 !important;
+    animation: fadeIn 0.3s, pulseSuccess 0.8s;
+  }
+  /* 🍞 Toast personalizado */
+  .toast-dup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    font-weight: 600;
+    z-index: 10000;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: slideInRight 0.3s, fadeOutDown 0.3s 4.7s forwards;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <header>
+    <h1>DEMANDA DE CITAS NO OTORGADAS</h1>
+  </header>
+  <div class="card">
+    <label>REGISTRO (Fecha y Hora)</label>
+    <div id="registro" class="registro" aria-live="polite"></div>
+    <div class="row" style="margin-top:10px;">
+      <div class="col">
+        <label>AGENTE *</label>
+        <div id="agente-search-container" class="search-container">
+          <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="agente-search" class="search-input" placeholder="Buscar agente..." autocomplete="off" />
+          </div>
+          <select id="agente" style="display: none;">
+
+
+
+<option value="5078 - SALINAS SIMON DELIA ROSA">5078 - SALINAS SIMON DELIA ROSA</option>
+<option value="5169 - MORE ZAVALETA ANTUANET ROSALYN">5169 - MORE ZAVALETA ANTUANET ROSALYN</option>
+<option value="5156 - VIDAL VALERA SANDRA">5156 - VIDAL VALERA SANDRA</option>
+<option value="5138 - REATEGUI TELLO ELVITA">5138 - REATEGUI TELLO ELVITA</option>
+<option value="5556 - FLORES TAFUR ROLANDO">5556 - FLORES TAFUR ROLANDO</option>
+<option value="5630 - INCHAUSTEGUI MESONES LUIS CARLOS">5630 - INCHAUSTEGUI MESONES LUIS CARLOS</option>
+<option value="5192 - SANCHEZ DE LA CRUZ MARTINA">5192 - SANCHEZ DE LA CRUZ MARTINA</option>
+<option value="5004 - RUMICHE RUMICHE MILAGROS MARIBEL">5004 - RUMICHE RUMICHE MILAGROS MARIBEL</option>
+<option value="5007 - ARRIOLA VASQUEZ AURORA ISABEL">5007 - ARRIOLA VÁSQUEZ AURORA ISABEL</option>
+<option value="5008 - PUZA CALLE FLOR">5008 - PUZA CALLE FLOR</option>
+<option value="5009 - BACA PANTA DAIS">5009 - BACA PANTA DAIS</option>
+<option value="5010 - LANDAVERI APAZA PAOLA MARICIELO">5010 - LANDAVERI APAZA PAOLA MARICIELO</option>
+<option value="5011 - RAMIREZ MORE MARCOS">5011 - RAMÍREZ MORE MARCOS</option>
+<option value="5012 - MARTINEZ RODRIGUEZ NOVA ROSA">5012 - MARTÍNEZ RODRÍGUEZ NOVA ROSA</option>
+<option value="5013 - CAMACHO PAREDES ANDREINA PILAR">5013 - CAMACHO PAREDES ANDREINA PILAR</option>
+<option value="5014 - LEON MENDOZA ABIGAIL">5014 - LEÓN MENDOZA ABIGAIL</option>
+<option value="5015 - CARRASCO SUDARIO JORGE">5015 - CARRASCO SUDARIO JORGE</option>
+<option value="5018 - CESPEDES CASTILLO LUCY NOEMI">5018 - CÉSPEDES CASTILLO LUCY NOEMÍ</option>
+<option value="5019 - SANCHEZ DE LA CRUZ MARTIN ALEXIS">5019 - SÁNCHEZ DE LA CRUZ MARTÍN ALEXIS</option>
+<option value="5020 - CORAL TERRONES MIGUEL ANGEL">5020 - CORAL TERRONES MIGUEL ÁNGEL</option>
+<option value="5021 - PENA GOMEZ MADELEINE">5021 - PEÑA GÓMEZ MADELEINE</option>
+<option value="5022 - BUENDIA GARCIA MELANNY ROSE">5022 - BUENDÍA GARCÍA MELANNY ROSE</option>
+<option value="5024 - OLARTE BALTAZAR RUBEN ANTHONY">5024 - OLARTE BALTAZAR RUBÉN ANTHONY</option>
+<option value="5025 - QUISPE GUTIERREZ JERSSON RODRIGO">5025 - QUISPE GUTIÉRREZ JERSSON RODRIGO</option>
+<option value="5026 - GRADOS GAMARRA MILAGROS ROSARIO">5026 - GRADOS GAMARRA MILAGROS ROSARIO</option>
+<option value="5029 - VILLALOBOS CACERES JAVIER ISAAC">5029 - VILLALOBOS CÁCERES JAVIER ISAAC</option>
+<option value="5031 - CHAVEZ RAMIREZ JANET">5031 - CHÁVEZ RAMÍREZ JANET</option>
+<option value="5034 - CORONEL MEZA ESTEFANY LIZBETH">5034 - CORONEL MEZA ESTEFANY LIZBETH</option>
+<option value="5035 - LEON SANDOVAL VICENTA DEL ROSARIO">5035 - LEÓN SANDOVAL VICENTA DEL ROSARIO</option>
+<option value="5036 - OBREGON SICCHA ROSA PAOLA">5036 - ÓBREGON SICCHA ROSA PAOLA</option>
+<option value="5040 - FIGUEROA MELGAREJO KRIS">5040 - FIGUEROA MELGAREJO KRIS</option>
+<option value="5041 - HUAMANI MARTINEZ CARMEN">5041 - HUAMANÍ MARTÍNEZ CARMEN</option>
+<option value="5042 - MORALES VILLEGAS SHIRLEY">5042 - MORALES VILLEGAS SHIRLEY</option>
+<option value="5045 - PEREZ DOLORES MARLENY">5045 - PÉREZ DOLORES MARLENY</option>
+<option value="5049 - CAYLLAHUA BENITES RICHARDO">5049 - CAYLLAHUA BENITES RICHARD BRIAN</option>
+<option value="5050 - NORIEGA RAMOS JUNIOR MANUEL">5050 - NORIEGA RAMOS JUNIOR MANUEL</option>
+<option value="5051 - VELASQUEZ ROSALES LUZ MARIA">5051 - VELÁSQUEZ ROSALES LUZ MARÍA</option>
+<option value="5053 - LA ROSA RAMIREZ ELIZABETH ESTRELL">5053 - LA ROSA RAMÍREZ ELIZABETH ESTRELLA</option>
+<option value="5054 - QUEZADA RUIZ SUSANA DEL PILAR">5054 - QUEZADA RUIZ SUSANA DEL PILAR</option>
+<option value="5055 - REYES PACCORE EDITH MILAGROS">5055 - REYES PACCORE EDITH MILAGROS</option>
+<option value="5056 - ASENCIOS VEGA PERCY EDU">5056 - ASENCO VEGA PERCY EDU</option>
+<option value="5059 - SALINAS BENITES SANDRA VIOLETA">5059 - SALINAS BENITES SANDRA VIOLETA</option>
+<option value="5061 - SUAREZ EXEBIO FIORELLA NICOLE">5061 - SUÁREZ EXEBIO FIORELLA NICOLE</option>
+<option value="5063 - VASQUEZ PUERTAS CARLOS ALBERTO">5063 - VÁSQUEZ PUERTAS CARLOS ALBERTO</option>
+<option value="5064 - TANTALEAN CABELLO BETSY DORA">5064 - TANTALEÁN CABELLO BETSY DORA</option>
+<option value="5065 - CHIPANA ARIAS LUZ ELENA">5065 - CHIPANA ARIAS LUZ ELENA</option>
+<option value="5066 - CHAVARRIA SAÑAC YERSY CRISTIAN">5066 - CHAVARRÍA SAÑAC YERSY CRISTIAN</option>
+<option value="5070 - CAVERO VILLAR IRIS DEL CARMEN">5070 - CAVERO VILLAR IRIS DEL CARMEN</option>
+<option value="5073 - CCOLLAZOS ESPINOZA LUIS ALBERTO">5073 - COLLAZOS ESPINOZA LUIS ALBERTO</option>
+<option value="5074 - RAMOS TOLEDO ABRAHAM">5074 - RAMOS TOLEDO ABRAHAM JOSUÉ</option>
+<option value="5076 - PAUCAR HUILLCA JUAN CARLOS">5076 - PAUCAR HUILLCA JUAN CARLOS</option>
+<option value="5079 - POMATAY CHUQUIYAURI NORMA MARIA">5079 - POMATAY CHUQUIYAURI NORMA MARÍA</option>
+<option value="5080 - BELTRAN SEMINARIO CYNTHIA">5080 - BELTRÁN SEMINARIO CYNTHIA ALEJANDRA</option>
+<option value="5081 - VASQUEZ PEREZ LUZ MARIA">5081 - VÁSQUEZ PÉREZ LUZ MARÍA</option>
+<option value="5082 - RIVERA PENA ILDAURA">5082 - RIVERA PEÑA ILDAURA</option>
+<option value="5090 - JAUREGUI CONDORI ALEJANDRA PILA">5090 - JAUREGUI CONDORI ALEJANDRA</option>
+<option value="5091 - TITO CAYO NOEMI LUZ">5091 - TITO CAYO NOEMÍ LUZ</option>
+<option value="5092 - DE LA CRUZ GRANADOS NATALY">5092 - DE LA CRUZ GRANADOS NATALY</option>
+<option value="5093 - VASQUEZ QUEZADA WILFREDO MANUEL">5093 - VÁSQUEZ QUEZADA WILFREDO MANUEL</option>
+<option value="5095 - CARDENAS AQUINO MARIANA JAZMIN">5095 - CÁRDENAS AQUINO MARIANA JAZMÍN</option>
+<option value="5096 - MOGOLLON MARTINEZ ZOE">5096 - MOGOLLÓN MARTÍNEZ ZOE SAMANTHA</option>
+<option value="5099 - TORIBIO PEDRAZA KENNETH">5099 - TORIBIO PEDRAZA KENNETH GREGORY</option>
+<option value="5100 - FRANCO HURTADO NICOLE MIRELLA">5100 - FRANCO HURTADO JHOSELYN SOFÍA</option>
+<option value="5102 - GIANELLO SUASO ANA">5102 - GIANELLO SUAZO ANA MARÍA FIORELLA</option>
+<option value="5103 - HUAMAN BALDARRAGO NAYELI ROMY">5103 - HUAMÁN BALDARRAGO NAYELI ROMY</option>
+<option value="5106 - JANAMPA AMAO NICOLE NAOMI">5106 - JANAMPA AMAO NICOLE NAOMI</option>
+<option value="5107 - SIPAN CARDENAS MIGUEL ANGEL">5107 - SIPÁN CÁRDENAS MIGUEL ÁNGEL</option>
+<option value="5108 - ESPINO TACUNA ANDREA ISABELLA">5108 - ESPINO TACUÑA ANDREA ISABELLA</option>
+<option value="5109 - VASQUEZ AGUILAR ROSA MARIBEL">5109 - VÁSQUEZ AGUILAR ROSA MARIBEL</option>
+<option value="5110 - REYES RAVELLO RUBY ELIZABETH">5110 - REYES RAVELLO RUBY ELIZABETH</option>
+<option value="5112 - CRUZ MARTINEZ LUISA CECILIA">5112 - CRUZ MARTÍNEZ LUISA CECILIA</option>
+<option value="5113 - CUNGIARACHE CAMASCA LILIANA LUZ">5113 - CUNGIARACHE CAMASCA LILIANA LUZ</option>
+<option value="5114 - CUYA SIMEON JULIA VICTORIA">5114 - CUYA SIMEÓN JULIA VICTORIA</option>
+<option value="5115 - DAVILA VEGA MARCO">5115 - DAVILA VEGA MARCO</option>
+<option value="5116 - ZAVALA MUNAYLLA MARIELLA">5116 - ZÁVALA MUNAYLLA MARIELLA</option>
+<option value="5117 - LUYO MIRABAL SOFIA">5117 - LUYO MIRABAL SOFÍA NATALI</option>
+<option value="5120 - LESCANO PECHE JANET TERESA">5120 - LESCÁNO PECHÉ JANET TERESA</option>
+<option value="5123 - MENDEZ QUISPE MARCOS ANTONIO">5123 - MENDEZ QUISPE MARCOS ANTONIO</option>
+<option value="5124 - MALASQUEZ AZAÑA FATIMA DAYANELLA">5124 - MALASQUÉZ AZAÑA FÁTIMA DAYANELLA</option>
+<option value="5127 - MOLLO GIRON DIEGO ALONSO">5127 - MOLLO GIRÓN DIEGO ALONSO</option>
+<option value="5128 - CARPIO CABALLERO OFELIA">5128 - CARPIO CABALLERO OFELIA JULIA</option>
+<option value="5130 - PARIASCA RIVERA JOSE FRANCISCO">5130 - PARIASCA RIVERA JOSÉ FRANCISCO</option>
+<option value="5131 - FRETEL TORRES CATHERINE">5131 - FRETEL TORRES CATHERINE NICOLE</option>
+<option value="5132 - MADUEÑO MADUEÑO KAREN">5132 - MADUEÑO MADUEÑO KAREN GIOMARA</option>
+<option value="5133 - REYES AQUINO ROSARIO">5133 - REYES AQUINO ROSARIO OLINDA</option>
+<option value="5139 - SEGURA CANCHUA MASHELY KRYSTEL">5139 - SEGURA CANCHUA MASHELY KRYSTEL</option>
+<option value="5140 - VALENZUELA ATENCIA GABRIELA MERCEDES">5140 - VALENZUELA ATENCIA GABRIELA MERCEDES</option>
+<option value="5141 - QUISPE CONTRERAS KATTY">5141 - QUISPE CONTRERAS KATTY</option>
+<option value="5142 - HUAYLLASCO RAMOS RONALD">5142 - HUAYLLASCO RAMOS RONALD VÍCTOR</option>
+<option value="5143 - GALLEGOS LARREA ROCIO JUANA">5143 - GALLEGOS LARREA ROCÍO JUANA</option>
+<option value="5146 - AYALA FLORES JEANNETTE">5146 - AYALA FLORES JEANNETTE</option>
+<option value="5147 - MATIAS GARCIA ROSA ANTONIETA">5147 - MATÍAS GARCÍA ROSA ANTONIETA</option>
+<option value="5149 - SAAVEDRA CUMPA JAVIER">5149 - SÁAVERDA CUMPA JAVIER</option>
+<option value="5150 - GARCIA CHAMAYA CLAUDIA CAMILA">5150 - GARCÍA CHAMAYA CLAUDIA CAMILA</option>
+<option value="5155 - HERNANDEZ AGUILAR JAVIER">5155 - HERNÁNDEZ AGUILAR JAVIER ALONSO TADEO</option>
+<option value="5158 - TORRES TORRES AMY DEANE">5158 - TORRES TORRES AMY DEANE</option>
+<option value="5160 - CHINCHAYAN MESIA GUANELLA">5160 - CHINCHAYÁN MESÍA GUANELLA</option>
+<option value="5162 - ESPIRITU DIAZ CARMEN MILAGROS">5162 - ESPÍRITU DÍAZ CARMEN MILAGROS</option>
+<option value="5165 - TEJEDA COCA MARIA JOSE">5165 - TEJEDA COCA MARÍA JOSÉ</option>
+<option value="5172 - PINGLO MENA PATRICIA">5172 - PINGLO MEÑA PATRICIA</option>
+<option value="5173 - MARTINEZ ORTIZ YESSICA JANET">5173 - MARTÍNEZ ORTIZ YÉSSICA JANET</option>
+<option value="5176 - ZUZUNAGA RIVEROS AMPARO">5176 - ZUZUNAGA RIVEROS AMPARO MILAGRITOS</option>
+<option value="5177 - QUINTERO CUEVA LUIS BECKAN">5177 - QUINTERO CUEVA LUIS BECKAN</option>
+<option value="5178 - ROMERO MELGAREJO GLORIA MILAGROS">5178 - ROMERO MELGAREJO GLORIA MILAGROS</option>
+<option value="5179 - PRADO GUTIERREZ VANESSA">5179 - PRADO GUTIÉRREZ VANESSA</option>
+<option value="5180 - ROMERO SAENZ ANGIE ALEXANDRA">5180 - ROMERO SÁENZ ANGIE ALEXANDRA</option>
+<option value="5181 - FERNANDEZ FLORES CLAUDIA">5181 - FERNANDEZ FLORES CLAUDIA</option>
+<option value="5183 - VEGA SORIA NILDA FLOR">5183 - VEGA SORIA NILDA FLOR</option>
+<option value="5184 - GUERRERO MARTELL ROSALIA VANESSA">5184 - GUERRERO MARTELL ROSALÍA VANESSA</option>
+<option value="5185 - LESCANO PECHE MARIA">5185 - LESCÁNO PECHÉ MARÍA ELENA</option>
+<option value="5186 - ALDERETE ARCOS MIRIAN ESTEFANI">5186 - ALDERETE ARCOS MIRIAN ESTEFANI</option>
+<option value="5187 - MOREANO MALDONADO SUSAN LENY">5187 - MOREANO MALDONADO SUSAN LENY</option>
+<option value="5190 - ESPINO TORRES CARLOS ARMANDO">5190 - ESPINO TORRES CARLOS ARMANDO</option>
+<option value="5194 - LINARES CARTY OLENKA JOHANA">5194 - LINARES CARTY OLENKA JOHANA</option>
+<option value="5196 - CONDORI MAMANI MARIA PILAR">5196 - CONDORI MAMANÍ MARÍA PILAR</option>
+<option value="5197 - ARREDONDO NAVARRO HANS RICARDO">5197 - ARREDONDO NAVARRO HANS RICARDO</option>
+<option value="5198 - DOMINGUEZ ROMERO DIANA OPCION 513">5198 - DOMÍNGUEZ ROMERO DE MARTÍNEZ DIANA</option>
+<option value="5201 - PEREZ UNAPILLCO GLORIA KATHERINE">5201 - PÉREZ UÑAPILLCO GLORIA KATHERINE</option>
+<option value="5202 - VALENCIA RODRIGUEZ JOSELYN XIMENA">5202 - VALENCIA RODRÍGUEZ JOSELYN XIMENA</option>
+<option value="5206 - VILCA REYNAFA IMANOL">5206 - VILCA REYNAGA IMANOL LEANDRO</option>
+<option value="5207 - SATALAYA SANCHEZ GELHI">5207 - SATALAYA SÁNCHEZ GELHI</option>
+<option value="5208 - GADEA DIONISIO DE ESPINOZA GUILNARA HEIDEMARIA">5208 - GADEA DIONISIO DE ESPINOZA GUILNARA HEIDEMARÍA</option>
+<option value="5209 - CHUGNAS FIGUEROA MELANIA">5209 - CHUGNAS FIGUEROA MELANIA</option>
+<option value="5210 - LEON OTERO LUIS MIGUEL">5210 - LEÓN OTERO LUIS MIGUEL</option>
+<option value="5213 - REMICIO RIVAS CAROLINA">5213 - REMICIO RIVAS DE CASTILLO CAROLINA</option>
+<option value="5214 - CAHUANA GARCIA AIRAM ANDREA DEL MAR">5214 - CAHUANA GARCÍA AIRAM ANDREA DEL MAR</option>
+<option value="5216 - FARRO PEREZ SARITA BELEN">5216 - FARRO PÉREZ SARITA BELÉN</option>
+<option value="5219 - SARE DOMINGUEZ ALBERTO FRANKLIN">5219 - SARE DOMÍNGUEZ ALBERTO FRANKLIN</option>
+<option value="5220 - SANCHEZ QUISPE MOISES JESUS">5220 - SÁNCHEZ QUISPE MOISÉS JESÚS</option>
+<option value="5222 - ESCALANTE CASTILLO LISSET">5222 - ESCALANTE CASTILLO LISSET</option>
+<option value="5224 - MENDOZA SILVA ALISON">5224 - MENDOZA SILVA ALISON</option>
+<option value="5227 - TITO LUNA MONICA ROSARIO">5227 - TITO LUNA MÓNICA ROSARIO</option>
+<option value="5228 - GARCIA ROCA FELICIANA EUGENIA">5228 - GARCÍA ROCA FELICIANA EUGENIA</option>
+<option value="5231 - VILCA CHUQUIYAURI NORMA">5231 - VILCA CHUQUIYAURI NORMA</option>
+<option value="5232 - IDROGO CELIZ GERALDINI ESTEFANI">5232 - IDROGO CÉLIZ GERALDINI ESTEFANI</option>
+<option value="5233 - GUEVARA ALVARADO MARILIZ">5233 - GUEVARA ALVARADO MARILIZ</option>
+<option value="5237 - SANCHEZ URPEQUE RAYZA ALEXANDRA">5237 - SÁNCHEZ URPEQUE RAYZA ALEXANDRA</option>
+<option value="5238 - CASTROMONTE CUEVA ANDREA ALEXANDRA">5238 - CASTROMONTE CUEVA ANDREA ALEXANDRA</option>
+<option value="5239 - ARANA CHAVEZ MARITZA">5239 - ARANA CHÁVEZ MARITZA LUZ</option>
+<option value="5241 - AVILES OJEDA IRMA">5241 - AVILÉS OJEDA IRMA</option>
+<option value="5242 - BALLADARES SHUPINGAHUA JOSE LUIS FERNANDO">5242 - BALLADARES SHUPINGAHUA JOSE LUIS FERNANDO</option>
+<option value="5243 - BAUTISTA DAMIAN MANUELA">5243 - BAUTISTA DAMIÁN MANUELA</option>
+<option value="5245 - BERNALDO CANTARO LIZBETH">5245 - BERNALDO CÁNTARO LIZBETH CATHERINE</option>
+<option value="5247 - REYES LOZANO ESTEFANI JHODITH">5247 - REYES PACCORE EDITH MILAGROS</option>
+<option value="5248 - SILVA UBILLUS ANDRE ARATH">5248 - SILVA UBILLUS ANDRÉ ARATH</option>
+<option value="5253 - CHAVEZ TINCO ELIO">5253 - CHÁVEZ TINCO ELIO JERSON</option>
+<option value="5255 - VASQUEZ VASQUEZ HAYDEE GERALDINE">5255 - VÁSQUEZ VÁSQUEZ HAYDEE GERALDINE</option>
+<option value="5256 - RAMIREZ FLORES LICELY">5256 - RAMÍREZ FLORES DE NUÑEZ LICEY</option>
+<option value="5257 - EVARISTO BUENDIA ARACELY">5257 - EVARISTO BUENDÍA ARACELY</option>
+<option value="5258 - FLORES VITOR MARISOL LEONILDA">5258 - FLORES VÍTOR MARISOL LEONILDA</option>
+<option value="5259 - QUIQUIJANA CONDORI JENNIFER">5259 - QUIQUIJANA CONDORI JENNIFER ANDREA</option>
+<option value="5260 - RAMIREZ BARBOZA MARIO ISAAC">5260 - RAMÍREZ BARBOZA MARIO ISAAC</option>
+<option value="5261 - GARCIA CAHUANA PATRICIA DEL CARMEN">5261 - GARCÍA CAHUANA PATRICIA DEL CARMEN</option>
+<option value="5262 - SALGADO CHAUCA RUBI">5262 - SALGADO CHAUCA RUBÍ ANALI</option>
+<option value="5263 - ROMERO CUEVA URPI ESPERANZA">5263 - ROMERO CUEVA URPI ESPERANZA</option>
+<option value="5264 - CASTILLO QUISPE MARIA FERNANDA">5264 - CASTILLO CARRASCO ROMÁN</option>
+<option value="5265 - BECERRA FLORES JOSE SANTOS">5265 - BECERRA FLORES JOSÉ SANTOS GLENN</option>
+<option value="5266 - HUINCHO CONDORI SHIRLEY">5266 - HUINCHO CONDORI SHIRLEY DAYANA</option>
+<option value="5267 - QUISPE ORELLANO JOSELYN">5267 - QUISPE ORELLANO JOSELYN YOLANDA</option>
+<option value="5268 - MAMANI PEÑA MAXIMIANA SOLEDAD">5268 - MAMANÍ PEÑA MAXIMIANA SOLEDAD</option>
+<option value="5269 - HURTADO VILOGRON DE SILVA MARIA DE MONTSERRAT">5269 - HURTADO VILOGRÓN DE SILVA MARÍA DE MONTSERRAT</option>
+<option value="5271 - LAURENTE LOPEZ KATHERINE ESTEFANIA">5271 - LAURENTE LÓPEZ KATHERINE ESTEFANÍA</option>
+<option value="5272 - GASGA DAVILA JHENLI">5272 - GASGA DÁVILA JHENLI</option>
+<option value="5275 - MANCO CASTILLO NICOLE DEYANIRA">5275 - JAUREGUI CONDORI ALEJANDRA</option>
+<option value="5276 - CRUZ PORTAL DANIEL">5276 - CRUZ PORTAL DANIEL JOSÉ</option>
+<option value="5277 - VILLANUEVA BARRETO LUCIA VERONICA">5277 - VILLANUEVA BARRETO LUCÍA VERÓNICA VANESSA</option>
+<option value="5278 - MEDINA AREVALO PATRICIA">5278 - MEDINA ARÉVALO PATRICIA</option>
+<option value="5279 - MELENDEZ AGUIRRE ELAYNE MILAGROS">5279 - MELENDEZ AGUIRRE ELAYNE MILAGROS</option>
+<option value="5280 - MELGAREJO MEJIA KATHERINE FATIMA">5280 - MELGAREJO MEJÍA KATHERINE FÁTIMA</option>
+<option value="5284 - NUNURA MIRANDA JACKELINE ESPERANZA">5284 - NUNURA MIRANDA JACKELINE ESPERANZA</option>
+<option value="5285 - NUÑEZ OBANDO ISABEL">5285 - NUÑEZ OBANDO KARINA ISABEL</option>
+<option value="5287 - YNGA ZAVALA MICHAEL JASON">5287 - INGA HERNÁNDEZ MERCEDES AMELIA</option>
+<option value="5288 - PUMA HUAMAN NATALY ANDREA">5288 - PUMA HUAMÁN NATALY ANDREA</option>
+<option value="5289 - QUISPE BELON CARLOS ELISBAN">5289 - QUISPE BELÓN CARLOS ELISBAN</option>
+<option value="5290 - PEDROZO CHUMPITAZ MAGDA GUADALUPE">5290 - PEDROZO CHUMPITAZ MAGDA GUADALUPE</option>
+<option value="5291 - CASTILLO RUIZ DENISSE">5291 - CASTILLO RUIZ DENISSE LUCERO</option>
+<option value="5293 - PEREZ MALPARTIDA EVA LUZ">5293 - PÉREZ MALPARTIDA EVA LUZ</option>
+<option value="5294 - PUERTAS ELGUERA MARGARITA GLADYS">5294 - PUERTAS ELGUERA MARGARITA GLADYS</option>
+<option value="5296 - IBARRA HUASHUAYO MILAGROS">5296 - IBARRA HUASHUAYO MILAGROS</option>
+<option value="5298 - CASTRO FUENTES STEPHANIE">5298 - CASTRO FUENTES STEPHANIE JAZBEL</option>
+<option value="5301 - MALDONADO BARRIONUEVO KARIN ROSA">5301 - MALDONADO CHUNGA SEGUNDO GRABIEL</option>
+<option value="5302 - PAREDES NAVARRO VALERIA DIANNA">5302 - PAREDES NAVARRO VALERIA DIANNA</option>
+<option value="5303 - NAHUI CANCHO MARIA CLAUDI">5303 - ÑAHUI CANCHO MARÍA CLAUDIA</option>
+<option value="5307 - CORDOVA BALDARRAGO ANDERSON OSWALDO">5307 - CÓRDOVA BALDARRAGO ANDERSON OSWALDO</option>
+<option value="5308 - ROSADO BERNAL MANUELA YANINA">5308 - ROSADO BERNAL MANUELA YANINA</option>
+<option value="5311 - ALVAREZ LUDEÑA GINO ANDREI">5311 - ÁLVAREZ LUDEÑA GINO ANDREI</option>
+<option value="5313 - ESPINOZA MENACHO JUAN">5313 - ESPINOZA MENACHO JUAN GERARDO</option>
+<option value="5316 - SIMON DURAND DE ZAMORA JESSICA GIOVANNA">5316 - SIMÓN DURAND DE ZAMORA JÉSSICA GIOVANNA</option>
+<option value="5317 - SEVILLA JIMENEZ PATRICIA IRMA">5317 - SEVILLA JIMÉNEZ PATRICIA IRMA</option>
+<option value="5318 - MANRIQUE CHIROQUE MANUEL">5318 - MANRIQUE CHIROQUE MANUEL</option>
+<option value="5321 - VALLADARES REYES VERONICA EMMA">5321 - VALLADARES REYES VERÓNICA EMMA</option>
+<option value="5322 - BAZAN TORRES GLADYS">5322 - BAZÁN TORRES GLADYS</option>
+<option value="5323 - DAVILA POSADAS ZAIRA">5323-DAVILA POSADAS ZAIRA</option>
+<option value="5324 - VELASQUEZ PAZ ZOILA ROSA">5324 - VELÁSQUEZ PAZ ZOILA ROSA</option>
+<option value="5326 - ADANAQUE JUAREZ ROSA">5326 - ADANAQUE JUÁREZ ROSA ARACELY</option>
+<option value="5327 - SOTA SOTELO JACQUELYN">5327 - SOTA SOTELO JACKELYN ANGÉLICA</option>
+<option value="5330 - GUIZADO FLORES MANOLO">5330 - GUIZADO FLORES MANOLO</option>
+<option value="5332 - BAUTISTA MENDOZA JENIFER">5332 - BAUTISTA MENDOZA JENNIFER JANNET</option>
+<option value="5335 - CUYA SAAVEDRA YARETH">5335 - UYA SAAVEDRA YARETH</option>
+<option value="5337 - COLONIA TIPIAN DARLING">5337 - COLONIA TIPIÁN DARLING ANDERSON</option>
+<option value="5338 - CONDORI DE LA CRUZ SARLETT">5338 - CONDORI DE LA CRUZ SCARLETT ENMA</option>
+<option value="5339 - CABANILLAS ESQUEN SANDRA">5339 - CABANILLAS ESQUÉN SANDRA ESTEFANY</option>
+<option value="5340 - CRUZ FLORES VELDIN">5340 - CRUZ FLORES VELDIN ALIPIO</option>
+<option value="5341 - GUILLEN OSTOS ROSA">5341 - GUILLEN ÓSTOS ROSA ETELVINA</option>
+<option value="5342 - DURAN QUISPE VERONICA">5342 - DURÁN QUISPE VERÓNICA VALERIA</option>
+<option value="5343 - ESCRIBA COSAVALENTE MIRIAM">5343 - ESCRIBA COSAVALENTE MIRIAM YANETT</option>
+<option value="5345 - FLORES DE LA CRUZ JOSELINE PAOLA">5345 - FLORES DE LA CRUZ JOSELINE PAOLA</option>
+<option value="5350 - DE LA CRUZ TAIPE PAULINA MINAYA">5350 - DE LA CRUZ TAIPE PAULINA MINAYA</option>
+<option value="5352 - LAMA BARRIAL JESSICA CYNTHIA">5352 - LAMA BARRIAL JÉSSICA CYNTHIA</option>
+<option value="5353 - CAMASSI SALDAÑA PATRICIA TATIANA">5353 - CAMASSI SALDAÑA PATRICIA TATIANA</option>
+<option value="5354 - PABON AYALA JHON">5354 - PABÓN AYALA JHON</option>
+<option value="5356 - CAMPOS SONO LIZ MARIELLA">5356 - CAMPOS SONO LIZ MARIELLA</option>
+<option value="5357 - MAMANI PAYEHUANCA ALBINA">5357 - MAMANÍ PAYEHUANCA ALBINA</option>
+<option value="5358 - RAMIREZ FLORES MIRIAM LILIANA">5358 - RAMÍREZ FLORES MIRIAM LILIANA</option>
+<option value="5359 - MORE GARCIA ESTHEFANY ROSALIA">5359 - MORE GARCÍA ESTHEFANY ROSALÍA</option>
+<option value="5360 - NOEL NOEL MARIA JESUS">5360 - NOEL NOEL MARÍA JESÚS</option>
+<option value="5366 - FRANCO LIMACHI JHOSELYN SOFIA">5366 - FRANCO LIMACHI JHOSELYN SOFÍA</option>
+<option value="5367 - QUISPE OSORIO ABIGAIL">5367 - LEÓN MENDOZA ABIGAIL MARÍA</option>
+<option value="5369 - QUISPE RODAS SILVIA">5369 - QUISPE RODAS SILVIA FLOR</option>
+<option value="5370 - RAMOS ORE ELIZABETH">5370 - RAMOS ORE ELIZABETH LIZ</option>
+<option value="5372 - ROBATTI CALDAS PATICIA">5372 - ROBATTI CALDAS PATRICIA GUILIANA</option>
+<option value="5374 - SALDAÑA SALAZAR CRISTIAN">5374 - SALDAÑA SALAZAR CRISTIAN ALBERTO</option>
+<option value="5375 - AVELLANEDA NAVARRO ADRIAN JACOB">5375 - AVELLANEDA NAVARRO ADRIÁN JACOB RAÚL</option>
+<option value="5376 - SHUPINGAHUA ALVAREZ JULIANA">5376 - SHUPINGAHUA ÁLVAREZ DE BARRETO JULIANA</option>
+<option value="5379 - MALDONADO CHUNGA SEGUNDO GRABRIEL">5379 - MALDONADO CHUNGA SEGUNDO GRABIEL</option>
+<option value="5380 - VIDAURRE DELGADO MARIA ELIZABETH">5380 - VIDAURRE DELGADO MARÍA ELIZABETH</option>
+<option value="5384 - DAMIAN DIAZ FABIAN">5384 - DAMIÁN DÍAZ FABIÁN</option>
+<option value="5385 - GUZMAN FUENTES JAKELYN">5385 - GUZMÁN FUENTES JAKELYN ALEJANDRINA</option>
+<option value="5389 - PAJUELO QUISPE GUISELLA LUZMILA">5389 - PAJUELO QUISPE GUISELLA LUZMILA</option>
+<option value="5390 - OLORTEGUI RAMIREZ JEANETTE GABY">5390 - OLORTEGUI RAMÍREZ JEANETTE GABY</option>
+<option value="5395 - LAIME GUTIERREZ MARLENE">5395 - LAIME GUTIÉRREZ MARLENE ADELINA</option>
+<option value="5398 - CHACON OLIVA RENZO LEONARDO">5398 - CHACÓN OLIVA RENZO LEONARDO</option>
+<option value="5400 - MACHADO AGUINAGA CRISTINA AURELIA ISABEL">5400 - MACHADO AGUINAGA CRISTINA AURELIA ISABEL</option>
+<option value="5401 - CHAVEZ ORTEGA BERTHA IVON">5401 - CHÁVEZ ORTEGA BERTHA IVONE</option>
+<option value="5406 - CARBAJAL ASENCIO MILAGROS">5406 - CARBAJAL ASENCIO MILAGROS</option>
+<option value="5407 - VELEZ SARMIENTO RUTH MARTHA">5407 - VÉLEZ SARMIENTO RUTH MARTHA</option>
+<option value="5411 - ROQUE QUEZADA CARMEN MILAGROS">5411 - ROQUE QUEZADA CARMEN MILAGROS</option>
+<option value="5415 - VALVERDE PILLPA SHARON GLADYS">5415 - VALVERDE PILLPA SHARON GLADYS</option>
+<option value="5335 - CUYA VILLEGAS ALEXIS ALFREDO">5335 - CUYA VILLEGAS ALEXIS ALFREDO</option>
+<option value="5420 - PEREZ PEZO CRISTINA">5420 - PÉREZ PEZO CRISTINA THALÍA</option>
+<option value="5421 - LLANCARI VASQUEZ ROMINA">5421 - LLANCARI VÁSQUEZ ROMINA YAMAIRA</option>
+<option value="5423 - VARGAS CHIRINOS MERCEDES">5423 - VARGAS CHIRINOS DE SAGASTEGUI MERCEDES SOLEDAD</option>
+
+<option value="5425 - BARRIENTOS VILLANUEVA DORITA">5425 - BARRIENTOS VILLANUEVA DORITA DEL PILAR</option>
+<option value="5426 - SOLANO TIPARRA GIANELLA">5426 - SOLANO TIPARRA GIANELLA LIZET</option>
+<option value="5427 - OCHOA CAMPOVERDE DIANA MARIZA">5427 - OCHOA CAMPOVERDE DIANA MARIZA</option>
+<option value="5428 - ALARCON GIRALDO PILAR">5428 - ALARCÓN GIRALDO PILAR</option>
+<option value="5429 - BAZAN REAÑO MIGUE">5429 - BAZÁN REAÑO MIGUEL ÁNGEL</option>
+<option value="5430 - JAUREGUI RONCEROS ERIKA LISBETT">5430 - VÁSQUEZ ALLCA ERIKA</option>
+<option value="5431 - MANTUSTHUPA SILVA FERNANDO OPCION 544">5431 - MANTUSTHUPA SILVA FERNANDO NARCISO</option>
+<option value="5432 - FERNANDEZ SANTA CRUZ MARÍA LILIANA">5432 - FERNANDEZ SANTA CRUZ MARÍA LILIANA</option>
+<option value="5536 - PEREZ SALVATIERRA MANUEL ANTONIO">5536 - PÉREZ SALVATIERRA MANUEL ANTONIO</option>
+<option value="5537 - VASQUEZ TROYES YUMALI">5537 - VÁSQUEZ TROYES YUMALI</option>
+<option value="5539 - CAYETANO ROJAS IVONNE FELICITAS">5539 - CAYETANO ROJAS IVONNE FELICITA</option>
+<option value="5540 - RIVERA SOTELO JHON EMMANUEL">5540 - RIVERA SOTELO JHON EMMANUEL</option>
+<option value="5541 - AGUERO SOLANO RAQUEL">5541 - AGÜERO SOLANO RAQUEL ÚRSULA</option>
+<option value="5543 - FIGUEROA MENDOZA KATHERINE JULIET">5543 - FIGUEROA MENDOZA KATHERINE JULIET</option>
+<option value="5544 - AGUILA MILLONES CARMEN">5544 - AGUILA MILLONES CARMEN ELIZABETH</option>
+<option value="5545 - NEYRA LOPEZ MIRIAN">5545 - NEYRA LÓPEZ MIRIAM JANET</option>
+<option value="5546 - ASTOCONDOR CALDAS JENNIFER">5546 - ASTOCONDOR CALDAS JENNIFER MILAGRITOS</option>
+<option value="5548 - GARCIA CAHUANA IVONNE JESSICA">5548 - GARCÍA CAHUANA IVONNE JESSICA</option>
+<option value="5549 - NORIEGA VALVERDE CAROLINA ALMENDRA">5549 - NORIEGA VALVERDE CAROLINA ALMENDRA</option>
+<option value="5551 - GAMARRA FERNANDEZ JESUS">5551 - GAMARRA FERNÁNDEZ JESÚS AARÓN</option>
+<option value="5555 - RIOS ADANAQUE NOEMI">5555 - RÍOS ADANAQUE NOEMI</option>
+<option value="5557 - ANGELES SAÑAC GEILY LOURDES">5557 - ÁNGELES SAÑAC GEILY LOURDES</option>
+<option value="5558 - QUISURUCO SILVA NAPOLY KONOSUKE">5558 - QUISURUCO SILVA NAPOLY KONOSUKE</option>
+<option value="5561 - TINEO MORI MONICA YESENIA">5561 - TINEO MORI MÓNICA YESSENIA</option>
+<option value="5562 - HUAMANI ANCHANTE MARCIA MARIEL">5562 - HUAMANÍ ANCHANTE MARCIA MARIEL</option>
+<option value="5563 - PASAPERA GONZALES PATRICIA IRENE">5563 - PASAPERA GONZÁLES PATRICIA IRENE</option>
+<option value="5566 - MANTUSTHUPA SILVA SILVIA PAMELA">5566 - MANTUSTHUPA SILVA SILVIA PAMELA</option>
+<option value="5567 - VALVERDE AGUILAR MARIA LUISA">5567 - VALVERDE AGUILAR MARÍA LUISA</option>
+<option value="5570 - TORRES PALOMINO JOSE ANTONIO">5570 - TORRES PALOMINO JOSÉ ANTONIO</option>
+<option value="5572 - SANCHEZ RAMON SEBASTIAN ALEXANDER">5572 - SÁNCHEZ RAMÓN SEBASTIÁN ALEXANDER</option>
+<option value="5574 - MOGOLLON PERALTA JESUS BENJAMIN">5574 - MOGOLLÓN PERALTA JESÚS BENJAMÍN</option>
+<option value="5575 - OCHOA CAMPOVERDE DIANA MARIZA">5575 - OCHOA CAMPOVERDE DIANA MARIZA</option>
+<option value="5576 - GUZMAN FUENTES JENIFER ANALI">5576 - GUZMÁN FUENTES JENIFER ANALI</option>
+<option value="5579 - YAFAC CALERO LUCIA">5579 - YAFAC CALERO LUCÍA MÍA MONSERRAT</option>
+<option value="5580 - ARAUJO PULIDO MARIA ISABEL">5580 - ARAUJO PULIDO MARÍA ISABEL</option>
+<option value="5583 - COPERTINO GAVINO MARITZA">5583 - COPERTINO GAVINO MARITZA ANGÉLICA</option>
+<option value="5584 - FERNANDEZ CHIPANA NELLY">5584 - FERNANDEZ CHIPANA NELLY</option>
+<option value="5588 - ACOSTA ROBLES MAXIMO">5588 - ACOSTA ROBLES MÁXIMO</option>
+<option value="5591 - ALVAREZ ATILANO MARTHA ESMERALDA">5591 - ÁLVAREZ ATILANO MARTHA ESMERALDA</option>
+<option value="5592 - BARREDA VALDIVIA DIANA ELIZABETH">5592 - BARREDA VALDIVIA DIANA ELIZABETH</option>
+<option value="5593 - LAMA BARRIAL JHOHANNY">5593 - LAMA BARRIAL JHOHANNY STEFANNIE</option>
+<option value="5596 - SILVA TIRADO MARITZA IVON">5596 - LUMBA TIRADO NATHALY MARGOTH</option>
+<option value="5597 - LOPEZ VALLES INGRID MILUSKA">5597 - LÓPEZ VALLES INGRID MILUSKA</option>
+<option value="5598 - VENEGAS CASTRO PIERO ALONSO">5598 - VENEGAS CASTRO PIERO ALONSO</option>
+<option value="5600 - GONZALES GOMEZ KARLA PAOLA">5600 - GONZÁLES GÓMEZ KARLA PAOLA</option>
+<option value="5601 - GAMARRA TORRES JOHN EDISSON">5601 - GAMARRA TORRES JOHN EDISSON</option>
+<option value="5602 - CHIRINOS ESCARCENA KARINA NATHALY">5602 - CHIRINOS ESCARCENA KARINA NATHALY</option>
+<option value="5604 - LOO GUZMAN ALEXANDRA">5604 - LÓO GUZMÁN ALEXANDRA</option>
+<option value="5608 - CHANCAFE ROBLES JACKELINE">5608 - CHANCAFÉ ROBLES JACQUELINE DEL ROCÍO</option>
+<option value="5610 - SALCEDO BEJARANO DE ISASI WENDY ELIZABETH">5610 - SALCEDO BEJARANO DE ISASI WENDY ELIZABETH</option>
+<option value="5611 - MELGAR LIZARBE DIANA CARMELA">5611 - RIVERA RAMÍREZ ROSA MARÍA</option>
+<option value="5613 - VIGO MENDOZA ELIZABETH">5613 - VIGO MENDOZA ELIZABETH</option>
+<option value="5614 - MATOS CHAVEZ KATHERIN">5614 - MATOS CHÁVEZ KATERIN JAZMÍN</option>
+<option value="5615 - PISCOYA SARRYN JHONNATHAN">5615 - PISCOYA SARRIN JHONATHAN DARLLY</option>
+<option value="5617 - ESTRADA SIPION HENRY EMERSON">5617 - ESTRADA SIPION HENRY EMERSON</option>
+<option value="5618 - SOSA AGUILAR GIANELLA DAPHNE">5618 - SOSA AGUILAR GIANELLA DAPHNE</option>
+<option value="5620 - GALLEGOS LOZA ROSANGELA">5620 - GALLEGOS LOZA ROSANGELA</option>
+<option value="5621 - CALDERON SOTO NATALY">5621 - CALDERÓN SOTO NATHALY DE LAS NIEVES</option>
+<option value="5622 - FIGUEROA GONZALES MILAGROS">5622 - FIGUEROA GONZÁLES MILAGROS</option>
+<option value="5624 - CHAMORRO OSTOS JANETT	">5624 - CHAMORRO OSTOS JANETT</option>            
+<option value="5626 - INGA HERNANDEZ MERCEDES AMELIA">5626 - INGA HERNÁNDEZ MERCEDES AMELIA</option>
+<option value="5630 - MENDEZ MARTINEZ FRANK GERSON">5630 - MENDEZ MARTINEZ FRANK GERSON</option>
+<option value="5633 - ROBLES PEREZ KATHERYNE JULISSA">5633 - ROBLES PÉREZ KATHERYNE JULISSA</option>
+<option value="5635 - PASTOR CHAVARRIA JENNIFER NICOLE">5635 - PASTOR CHAVARRÍA JENNIFER NICOLE</option>
+<option value="5636 - CAMPOS AVILA ROBERTO">5636 - CAMPOS AVILA ROBERTO JORGE</option>
+<option value="5639 - QUISPE HUAMAN LUZ MARINA">5639 - QUISPE HUAMÁN LUZ MARINA</option>
+<option value="5640 - ROJAS PORTUGUEZ VIOLETA LIZ">5640 - ROJAS PORTUGUEZ VIOLETA LIZ</option>
+<option value="5641 - URBANO GUERRERO JUAN ALONSO">5641 - URBANO GUERRERO JUAN ALONSO</option>
+<option value="5642 - NAVARRO LOAYZA MAGALLY PATRICIA">5642 - NAVARRO LOAYZA MAGALLY PATRICIA</option>
+<option value="5643 - FLORES SANCHEZ DE KARA KELLY MONICA">5643 - FLORES SÁNCHEZ DE KARA KELLY MÓNICA</option>
+<option value="5644 - FACUNDO BRUNO NICK BRENER">5644 - FACUNDO BRUNO NICK BREMER</option>
+<option value="5645 - RIVERA EXEBIO LOURDES PATRICIA">5645 - RIVERA EXEBIO LOURDES PATRICIA</option>
+<option value="5648 - GONZALES MARTEL JESSICA">5648 - GONZÁLES MARTEL JESSICA OBDULIA</option>
+<option value="5650 - CARDENAS RIOJAS KARIN LORENA">5650 - CÁRDENAS RIOJAS KARIN LORENA</option>
+<option value="5651 - GONZALES TERRONES LUZMILA DEL ROCIO">5651 - GONZÁLES TERRONES LUZMILA DEL ROCÍO</option>
+<option value="5652 - LUMBA TIRADO NATHALY MARGOTH">5652 - LUMBA TIRADO NATHALY MARGOTH</option>
+<option value="5654 - BUENDIA PLAZA EMILY LISETTE">5654 - BUENDÍA PLAZA EMILY LISETTE</option>
+<option value="5656 - ALARCON SUELDO CLAUDIA CAMILA">5656 - ALARCÓN SUELDO CLAUDIA CAMILA</option>
+<option value="5660 - GUERRERO CAMPOS YULY ELISABETH">5660 - GUERRERO CAMPOS YULY ELISABET</option>
+<option value="5663 - MANRIQUE HUAMAN GIULIANNA">5663 - MANRIQUE HUAMÁN GIULIANNA</option>
+<option value="5666 - SALON INGA ARACELI">5666 - SALÓN INGA ARACELI</option>
+<option value="5672 - MORENO FLORES CINTHYA VANESSA">5672 - MORENO FLORES CINTHYA VANESSA</option>
+<option value="5679 - GONZALES FARROÑAN GIOVANNA MARLENE">5679 - GONZÁLES FARROÑAN GIOVANNA MARLENE</option>
+<option value="5677 - VILELA CHAPOÑAN BRIZET">5677 - VILELA CHAPOÑAN BRIZET</option>
+<option value="5680 - GONZALES FLORES LIZBETH ROXANA">5680 - GONZÁLES FLORES LIZBETH ROXANA</option>
+<option value="5681 - CALDERON SALAZAR CARMEN ROSA">5681 - CALDERÓN SALAZAR CARMEN ROSA</option>
+<option value="5683 - CARPIO PINEDA JORGE VICTOR">5683 - CARPIO PINEDA JORGE VÍCTOR</option>
+<option value="5685 - BENAVIDES MARIN DIANA GUADALUPE">5685 - BENAVIDES MARÍN DIANA GUADALUPE</option>
+<option value="5688 - SILENCIO PALACIO DAVID WASHINGTON">5688 - SILENCIO PALACIO DAVID WASHINGTON</option>
+<option value="5693 - CARRION SANTOS OSCAR MARTIN">5693 - CARRIÓN SANTOS ÓSCAR MARTÍN</option>
+<option value="5695 - ARTEAGA SANCHEZ ANGHELI SAORI">5695 - ARTEAGA SÁNCHEZ ANGHELI SAORI</option>
+<option value="5696 - CASTILLO CLAVO YAJAHIRA DEL MILAGRO">5696 - CASTILLO CLAVO YAJAHIRA DEL MILAGRO</option>
+<option value="5698 - GIRALDO ALVAREZ ROXANA">5698 - GIRALDO ÁLVAREZ DE GUZMÁN ROXANA</option>
+<option value="5699 - SOLIS FLORES JOEL ALFREDO">5699 - SOLÍS FLORES JOEL ALFREDO ALEJANDRO</option>
+<option value="5700 - TORRES CONDORI FIORELA JULIA">5700 - TORRES CONDORI FIORELA JULIA</option>
+<option value="5701 - SANTOS URETRA GLADIS ISIDORA">5701 - SANTOS URETA GLADIS ISIDORA</option>
+<option value="5702 - VALLADOLID REYNAGA JEFFREY ALDAIR">5702 - VALLADOLID REYNAGA JEFFREY ALDAIR</option>
+<option value="5705 - HERRERA VERA ESTEFANO EMILIO">5705 - HERRERA VERA ESTEFANO EMILIO</option>
+<option value="5707 - VELIZ HUAPAYA ROXANA MARGARITA">5707 - VELIZ HUAPAYA ROXANA MARGARITA</option>
+<option value="5708 - CARDENAS CHOQUE ANGIE">5708 - CARDENAS CHOQUE ANGIE</option>
+<option value="5709 - ALARCON MOGOLLON KAREN JACKELINE">5709 - ALARCÓN MOGOLLÓN KAREN JACKELINE</option>
+<option value="5710 - HILDALGO SOLORZANO KIMBERLY CATHERINE">5710 - HILDAÑO SOLORZANO KIMBERLY CATHERINE</option>
+<option value="5711 - DELGADO HUAMANI GINO ALEXIS">5711 - DELGADO HUAMÁN GINO ALEXIS</option>
+<option value="5713 - ORTIZ FLORES YOLANDA LIDIA">5713 - ORTIZ FLORES YOLANDA LIDIA</option>
+<option value="5716 - LLACCHUA IPARRAGUIRRE JHOANNA ASUMY AMIRY">5716 - LLACSA DHYAN RAJENDRA</option>
+<option value="5717 - ORDOÑEZ MARTICORENA FIORELLA MINOSKA">5717 - ORDOÑEZ MARTICORENA FIORELLA MINOSKA</option>
+<option value="5718 - TORRES TORRES ANGIE LESSLY">5718 - TORRES TORRES ANGIE LESSLY</option>
+<option value="5719 - FRANCISCO GUARNIZ EDITH">5719 - FRANCISCO GUARNIZ EDITH</option>
+<option value="5612 - MANSILLA HERRERA RONNY">5612 - MANSILLA HERRERA RONNY</option>          
+<option value="5720 - RIVERA RAMIREZ ROSA">5720 - RIVERA RAMÍREZ ROSA MARÍA</option>
+<option value="5721 - AMAYA HUARCAYA LIZBETH CINDIA">5721 - AMAYA HUARCAYA LIZBETH CINDIA</option>
+<option value="5722 - PLAZA SANCHEZ DARIO">5722 - PLAZA SÁNCHEZ DARÍO IGNACIO</option>
+<option value="5723 - GARCIA ODIAGA ALEJANDRO">5723 - GARCÍA ODIAGA ALEJANDRO PAOLO</option>
+<option value="5725 - HUAZANGA TORRES MAYLY">5725 - HUAZANGA TORRES MAYLY</option>
+<option value="5726 - TRINIDAD ALVAREZ DE MANTILLA LIBERTAD">5726 - TRINIDAD ÁLVAREZ DE MANTILLA LIBERTAD</option>
+<option value="5727 - PRADO PALOMINO ERICK">5727 - PRADO PALOMINO ERICK</option>
+<option value="5728 - AREVALO ODAR MILAGROS">5728 - ARÉVALO ODAR MILAGROS AREI</option>
+<option value="5734 - QUISPE ALBINO MARIBEL">5734 - QUISPE ALBINO MARIBEL PAULINA</option>
+<option value="5735 - CALDERON CABANILLAS JULY">5735 - CALDERÓN CABANILLAS JULY SOLEDAD</option>
+<option value="5738 - QUISPE OLAVE CARMEN">5738 - QUISPE ÓLAVE CARMEN</option>
+<option value="5739 - SANCHEZ DE LA CRUZ BIANCA">5739 - SÁNCHEZ DE LA CRUZ BIANCA IRAZÚ</option>
+<option value="5740 - LECERAS HUILLCA MARIA ISABEL">5740 - LECERAS HUILLCA MARÍA ISABEL</option>
+<option value="5742 - ALVAREZ SANCHEZ JOSE ANTONIO">5742 - ALVAREZ SANCHEZ JOSE ANTONIO</option>
+<option value="5743 - GONZALES HEREDIA ALEXANDRA SUAN">5743 - GONZÁLES HEREDIA ALEXANDRA SUAN</option>
+<option value="5744 - AHUMADA LLANOS ALVAROO">5744 - AHUMADA LLANOS ÁLVARO ALBERTO</option>
+<option value="5745 - GONZALES ARIAS RUBI">5745 - GONZÁLES ARIAS RUBI</option>
+<option value="5831 - SILVA MORA YENY">5831 - SILVA MORA YENY</option>
+<option value="5895 - RAMIREZ BARBOZA SANDY ROMINA">5895 - RAMÍREZ BARBOZA SANDY ROMINA</option>
+<option value="5897 - MUÑOZ CASTREJON MARIA">5897 - MUÑOZ CASTREJÓN MARÍA DEL CARMEN</option>
+<option value="6233 - NACION GUTIERREZ EDWIN">6233 - NACIÓN GUTIÉRREZ EDWIN WALTER</option>
+<option value="6234 - PAREDES NAVARRO VALERIA DIANNA">6234 - PAREDES NAVARRO VALERIA DIANNA</option>
+<option value="6235 - BERNACHEA BLAS EVELYN XIOMARA">6235 - BERNACHEA BLAS EVELYN XIOMARA</option>
+<option value="6257 - ALVARADO RAMIREZ BRENDA NICOL">6257 - ALVARADO RAMÍREZ BRENDA NICOL</option>
+<option value="6766 - VELIZ GUEVARA SUSANA ZARINA">6766 - VELIZ GUEVARA SUSANA ZARINA</option>
+<option value="6780 - MESONES MESONES BORIS JHON">6780 - MESONES MESONES BORIS JHON</option>
+<option value="6790 - CAVERO ESPINOZA ADRIAN">6790 - CAVERO ESPINOZA ADRIÁN</option>
+<option value="6791 - AMAHUANCA AGUERO EFRAIN EUGENI">6791 - AMAHUANCA AGÜERO EFRAÍN EUGENIO</option>
+<option value="6792 - JUAREZ CASTILLO DIANA">6792 - JUÁREZ CASTILLO DIANA VANESSA</option>
+<option value="6793 - HUARIPATA BENITES JUAQUINA">6793 - CAYLLAHUA BENITES RICHARD BRIAN</option>
+<option value="6794 - VILLACORTA ROMERO ROXANA">6794 - VILLACORTA ROMERO ROXANA PATRICIA</option>
+<option value="6795 - HUAMANTINCO TORRES FLORENCIA ALEJANDRA">6795 - HUAMANTINCO TORRES FLORENCIA ALEJANDRA</option>
+<option value="6797 - OSORIO CUADROS ELIZABETH ROSA">6797 - OSORIO CUADROS ELIZABETH ROSA</option>option>
+<option value="6798 - GARCIA SILVERA ANA">6798 - GARCÍA SILVA ANA</option>
+<option value="6799 - MUÑOZ CERDAN OLGA">6799 - MUÑOZ CERDÁN OLGA</option>
+<option value="6800 - NAJARRO ESPINOZA PIERO JESUS">6800 - ÑAHUI CANCHO MARÍA CLAUDIA</option>
+<option value="6802 - QUINTANA DOLORIER MARIA ELENA">6802 - QUINTANA DOLORIER MARÍA ELENA</option>
+<option value="6803 - PALOMINO CAMONES SONIA">6803 - PALOMINO CAMONES SONIA</option>
+<option value="6806 - ZUÑIGA YLLANES MELANIA BRIGITHE">6806 - ZUÑIGA YLLANES MELANIE BRIGITHE</option>
+<option value="6807 - CONDORI HUANCA VANESSA ANGELICA">6807 - CONDORI HUANCA VANESSA ANGÉLICA</option>
+<option value="6808 - CURIMANYA CCOYLLO GRECIA MARGARITA">6808 - CURIMANYA CCOYLLO GRECIA MARGARITA</option>
+<option value="6809 - GODOY BRAVO EMANUEL">6809 - GODOY BRAVO EMANUEL HORACIO</option>
+<option value="6813 - AMANQUI PAREDES SONIA">6813 - AMANQUI PAREDES SONIA</option>
+<option value="6814 - GUTIERREZ LUYO ROSA">6814 - GUTIÉRREZ LUYO DE NAVARRO ROSA TULIA</option>
+<option value="6815 - CIPRIANI HUAMAN FRANCO">6815 - CIPRIANI HUAMÁN FRANCO</option>
+<option value="6817 - CASIANO PARIONA MELANIE LIZETH">6817 - CASIANO PARIONA MELANIE LIZETH</option>
+<option value="6818 - MARTEL VILLAR FABIANA">6818 - MARTEL VILLAR FABIANA</option>
+<option value="6819 - INOCENTE ESPINOZA ALLISSON PAOLA">6819 - INOCENTE ESPINOZA ALLISSON PAOLA</option>
+<option value="6820 - LARREA RAMIREZ DAPHNE FIORELLA">6820 - LARREA RAMÍREZ DAPHNE FIORELLA MILAGROS</option>
+<option value="6823 - SALAS TACSA MELISSA">6823 - SALAS TACSA MELISA CECILIA</option>
+<option value="6825 - NONONE CARHUAMACA EVELYN HELENA">6825 - NONONE CARHUAMACA EVELYN HELEN</option>
+<option value="6826 - ROBLES AVALOS GABRIELA RUTH">6826 - ROBLES AVALOS GABRIELA RUTH</option>
+<option value="6828 - BARRENECHEA PORRAS KATHERINE">6828 - BARRENECHEA PORRAS KATHERINE DEL CARMEN</option>
+<option value="6829 - MEJIA CAÑOTE ROSSEMEY">6829 - MEJÍA CAÑOTE ROSSEMEY JACKELINE</option>
+<option value="6830 - RISCO GODOY SAID">6830 - RISCO GODOY SAID</option>
+<option value="6831 - MORENO ARONI CARMEN LIDIA OPCION 549">6831 - MORENO ARONI CARMEN LIDIA</option>
+<option value="6832 - LIMAHUAYA HALLASI MARTHA">6832 - LIMAHUAYA HALLASI MARTHA</option>
+<option value="6835 - HUALLANCA PAREDES RAQUEL MARGOT">6835 - HUALLANCA PAREDES RAQUEL MARGOT</option>
+<option value="6836 - HUAYLLA DE LA CRUZ ALEXIS">6836 - HUAYLLA DE LA CRUZ ALEXIS</option>
+
+
+
+
+          </select>
+          <div id="agente-search-results" class="search-results"></div>
+        </div>
+        <div id="agente_fijado" class="fijado-label">🔒 FIJADO</div>
+        <div style="margin-top:6px;">
+          <button id="fixAgente" class="small-btn notfixed">FIJAR</button>
+          <button id="unfixAgente" class="small-btn notfixed" style="margin-left:6px;">NO FIJAR</button>
+          <span id="checkAgente" class="check">✔</span>
+        </div>
+      </div>
+      <div class="col">
+        <label>SUPERVISOR *</label>
+        <div id="supervisor-search-container" class="search-container">
+          <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="supervisor-search" class="search-input" placeholder="Buscar supervisor..." autocomplete="off" />
+          </div>
+          <select id="supervisor" style="display: none;">
+
+
+<option value="RAMOS GUEVARA CYNTHIA KATHEEN">RAMOS GUEVARA CYNTHIA KATHEEN</option>           
+<option value="ALTAMIRANO ZUÑIGA SHARON LUCIA">ALTAMIRANO ZUÑIGA SHARON LUCIA</option>
+<option value="ARAGON CAMPOS INGRI JANETT">ARAGON CAMPOS INGRI JANETT</option>
+<option value="BAUTISTA MENDOZA JENNIFER JANNET">BAUTISTA MENDOZA JENNIFER JANNET</option>
+<option value="CASTILLO CLAVO YAJAHIRA DEL MILAGRO">CASTILLO CLAVO YAJAHIRA DEL MILAGRO</option>
+<option value="DE LA CRUZ ORTEGA LUIS JESUS">DE LA CRUZ ORTEGA LUIS JESUS</option>
+<option value="GUZMAN FUENTES JAKELYN ALEJANDRINA">GUZMAN FUENTES JAKELYN ALEJANDRINA</option>
+<option value="LIBERATO CHAMORRO DIANA CLARA">LIBERATO CHAMORRO DIANA CLARA</option>
+<option value="MACHACA CANDIA DELIA YANET">MACHACA CANDIA DELIA YANET</option>
+<option value="MEDINA AREVALO PATRICIA">MEDINA AREVALO PATRICIA</option>
+<option value="MEDINA JUSCAMAYTA VERONICA ESTHER">MEDINA JUSCAMAYTA VERONICA ESTHER</option>
+<option value="PAJUELO QUISPE GUISELLA LUZMILA">PAJUELO QUISPE GUISELLA LUZMILA</option>
+<option value="PORTOCARRERO ROJAS VERONICA NELLY">PORTOCARRERO ROJAS VERONICA NELLY</option>
+<option value="RUJEL ASENCIO MONICA">RUJEL ASENCIO MONICA</option>
+<option value="SALES TELLO JIMENA CONSUELO">SALES TELLO JIMENA CONSUELO</option>
+<option value="SANTILLANA RODRIGUEZ LAURA LUZ">SANTILLANA RODRIGUEZ LAURA LUZ</option>
+<option value="UGAZ JEU MONICA">UGAZ JEU MONICA</option>
+
+
+
+
+
+
+            
+          </select>
+          <div id="supervisor-search-results" class="search-results"></div>
+        </div>
+        <div id="supervisor_fijado" class="fijado-label">🔒 FIJADO</div>
+        <div style="margin-top:6px;">
+          <button id="fixSupervisor" class="small-btn notfixed">FIJAR</button>
+          <button id="unfixSupervisor" class="small-btn notfixed" style="margin-left:6px;">NO FIJAR</button>
+          <span id="checkSupervisor" class="check">✔</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>TIPO DE DOCUMENTO *</label>
+        <select id="tipoDoc">
+          <option value="">Seleccione tipo...</option>
+          <option value="DNI">DNI</option>
+          <option value="CE">CE</option>
+          <option value="CEDULA">CEDULA</option>
+          <option value="PASS">PASS</option>
+        </select>
+        <span id="checkTipoDoc" class="check">✔</span>
+      </div>
+      <div class="col">
+        <label>N° DOCUMENTO *</label>
+        <input id="dni" type="text" placeholder="Ingrese número de documento" maxlength="8" inputmode="numeric" />
+        <span id="checkDni" class="check">✔</span>
+      </div>
+    </div>
+    <label>APELLIDOS Y NOMBRES *</label>
+    <input id="nombres" type="text" readonly placeholder="Se autocompleta con DNI (si existe)" />
+    <span id="checkNombres" class="check">✔</span>
+    <div class="row">
+      <div class="col">
+
+        
+        <label>FECHA DE NACIMIENTO *</label>
+        <input id="fechaNacimiento" type="date" />
+        <span id="checkFechaNacimiento" class="check">✔</span>
+      </div>
+
+      
+      <div class="col">
+        <label>SEXO *</label>
+        <select id="sexo">
+          <option value="">Seleccione</option>
+          <option value="MASCULINO">MASCULINO</option>
+          <option value="FEMENINO">FEMENINO</option>
+        </select>
+        <span id="checkSexo" class="check">✔</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>IPRESS *</label>
+        <div id="ipress-search-container" class="search-container">
+          <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="ipress-search" class="search-input" placeholder="Buscar IPRESS..." autocomplete="off" />
+          </div>
+          <select id="ipress" required style="display: none;">
+
+
+<option value="CM ANCIJE">C.M. ANCIJE</option>
+<option value="CM MALA">C.M. MALA</option>
+<option value="CAP II CHANCAY">CAP II CHANCAY</option>
+<option value="CAP II LURIN">CAP II LURÍN</option>
+<option value="CAP II PARAMONGA">CAP II PARAMONGA</option>
+<option value="CAP II SAYAN">CAP II SAYÁN</option>
+<option value="CAP I OYON">CAP I OYÓN</option>
+<option value="CAP III ALFREDO PIAZZA ROBERTS">CAP III ALFREDO PIAZZA ROBERTS</option>
+<option value="CAP III CARABAYLLO">CAP III CARABAYLLO</option>
+<option value="CAP III EL AGUSTINO">CAP III EL AGUSTINO</option>
+<option value="CAP III HNA MARIA DONROSE SUTMOLLER">CAP III HNA. MARÍA DONROSE SUTMÖLLER</option>
+<option value="CAP III HUARAL">CAP III HUARAL</option>
+<option value="CAP III HUAYCAN">CAP III HUAYCÁN</option>
+<option value="CAP III INDEPENDENCIA">CAP III INDEPENDENCIA</option>
+<option value="CAP III LUIS NEGREIROS VEGA">CAP III LUIS NEGREIROS VEGA</option>
+<option value="CAP III METROPOLITANO CALLAO">CAP III METROPOLITANO CALLAO</option>
+<option value="CAP III PEDRO REYES BARBOZA">CAP III PEDRO REYES BARBOZA</option>
+<option value="CAP III PUENTE PIEDRA">CAP III PUENTE PIEDRA</option>
+<option value="CAP III SAN ISIDRO">CAP III SAN ISIDRO</option>
+<option value="CAP III SAN JUAN DE MIRAFLORES">CAP III SAN JUAN DE MIRAFLORES</option>
+<option value="CAP III SURQUILLO">CAP III SURQUILLO</option>
+
+            
+<option value="HI AURELIO DIAZ-UFANO Y PERAL">H.I AURELIO DÍAZ-UFANO Y PERAL</option>
+<option value="HI CARLOS ALCANTARA BUTTERFIELD">H.I CARLOS ALCÁNTARA BUTTERFIELD</option>
+<option value="HI JORGE VOTO BERNALLES CORPANCHO">H.I JORGE VOTO BERNALLES CORPANCHO</option>
+<option value="HI MARINO MOLINA SCIPPA">H.I MARINO MOLINA SCIPPA</option>
+<option value="HI OCTAVIO MONGRUT MUNOZ">H.I OCTAVIO MONGRUT MUÑOZ</option>
+<option value="HI ULDARICO ROCCA FERNANDEZ">H.I ULDÁRICO ROCCA FERNÁNDEZ</option>
+
+<option value="HII ALBERTO LEONARDO BARTON THOMPSON">H.II ALBERTO LEONARDO BARTON THOMPSON</option>            
+<option value="HII CANETE">H.II CAÑETE</option>
+<option value="HII GUSTAVO LANATTA LUJAN">H.II GUSTAVO LANATTA LUJÁN</option>
+<option value="HII GUILLERMO KAELIN DE LA FUENTE">H.II GUILLERMO KAELIN DE LA FUENTE</option>
+            
+<option value="HII LIMA NORTE - CALLAO L NEGREIROS V">H.II LIMA NORTE - CALLAO L. NEGREIROS V.</option>
+<option value="HII RAMON CASTILLA">H.II RAMÓN CASTILLA</option>
+<option value="HII VITARTE">H.II VITARTE</option>
+<option value="HIII HOSPITAL DE EMERGENCIAS GRAU">H.III HOSPITAL DE EMERGENCIAS GRAU</option>
+<option value="HIII SUAREZ-ANGAMOS">H.III SUÁREZ-ANGAMOS</option>
+<option value="HN ALBERTO SABOGAL SOLOGUREN">H.N. ALBERTO SABOGAL SOLOGUREN</option>
+<option value="HN EDGARDO REBAGLIATI MARTINS">H.N. EDGARDO REBAGLIATI MARTINS</option>
+<option value="HN G.ALMENARA">H.N. G.ALMENARA</option>
+            
+<option value="IPRESS CLINICA SAN BARTOLOME - HUACHO">IPRESS CLÍNICA SAN BARTOLOMÉ - HUACHO</option>
+<option value="IPRESS CLINICA SAN PEDRO">IPRESS CLÍNICA SAN PEDRO</option>
+<option value="IPRESS LOS OLIVOS">IPRESS LOS OLIVOS</option>   
+<option value="IPRESS EL TREBOL">IPRESS EL TREBOL</option> 
+<option value="IPRESS PRO LIMA">IPRESS PRO LIMA</option>
+<option value="IPRESS VILLA SOL">IPRESS VILLA SOL</option>            
+
+            
+<option value="POL CHINCHA">POL. CHINCHA</option>
+<option value="POL CHOSICA">POL. CHOSICA</option>
+<option value="POL COMPLEJIDAD CRECIENTE SAN NICOLAS">POL. COMPLEJIDAD CRECIENTE SAN NICOLÁS</option>
+<option value="POL FIORI">POL. FIORI</option>
+<option value="POL FRANCISCO PIZARRO">POL. FRANCISCO PIZARRO</option>
+<option value="POL JUAN JOSE RODRIGUEZ LAZO">POL. JUAN JOSÉ RODRÍGUEZ LAZO</option           
+
+<option value="POL PROCERES">POL. PRÓCERES</option>
+<option value="POL SAN LUIS">POL. SAN LUIS</option>
+<option value="POL SANTA CRUZ">POL. SANTA CRUZ</option>
+<option value="POLICLINICO BAYOVAR">POLICLÍNICO BAYÓVAR</option>
+<option value="POLICLINICO PROCERES">POLICLÍNICO PROCERES</option>            
+<option value="POLICLINICO SAN CARLOS">POLICLÍNICO SAN CARLOS</option>
+<option value="RETABLO - COMAS">RETABLO - COMAS</option>
+<option value="CENTRO DE ATENCION INTEGRAL DE DIABETES E HIPERTENSION ARTERIAL CEDHI">CENTRO DE ATENCIÓN INTEGRAL DE DIABETES E HIPERTENSIÓN ARTERIAL CEDHI</option>
+<option value="POL PABLO BERMUDEZ">POL. PABLO BERMÚDEZ</option>
+
+
+
+
+
+            
+          </select>
+          <div id="ipress-search-results" class="search-results"></div>
+        </div>
+        <span id="checkIpress" class="check">✔</span>
+      </div>
+      <div class="col">
+        <label>ESPECIALIDAD *</label>
+        <div id="espe-search-container" class="search-container">
+          <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="espe-search" class="search-input" placeholder="Buscar especialidad..." autocomplete="off" />
+          </div>
+          <select id="espe" style="display: none;">
+
+
+            
+<option value="CARDIOLOGÍA">CARDIOLOGÍA</option>
+<option value="CIRUGÍA CARDIOVASCULAR">CIRUGÍA CARDIOVASCULAR</option>
+<option value="CIRUGÍA GENERAL">CIRUGÍA GENERAL</option>
+<option value="CIRUGÍA PEDIÁTRICA">CIRUGÍA PEDIÁTRICA</option>
+<option value="CIRUGÍA PLÁSTICA">CIRUGÍA PLÁSTICA</option>
+<option value="DERMATOLOGÍA">DERMATOLOGÍA</option>
+<option value="ENDOCRINOLOGÍA">ENDOCRINOLOGÍA</option>
+<option value="ENFERMERÍA">ENFERMERÍA</option>
+<option value="GASTROENTEROLOGÍA">GASTROENTEROLOGÍA</option>
+<option value="GERIATRÍA">GERIATRÍA</option>
+<option value="GINECO - OBSTÉTRICA">GINECO - OBSTÉTRICA</option>
+<option value="GINECOLOGÍA">GINECOLOGÍA</option>
+<option value="HEMATOLOGÍA">HEMATOLOGÍA</option>
+<option value="INFECTOLOGIA">INFECTOLOGIA</option>
+<option value="MED. COMPLEMENTARIA">MED. COMPLEMENTARIA</option>
+<option value="MED. FÍSICA Y REHABILITACIÓN">MED. FÍSICA Y REHABILITACIÓN</option>
+<option value="MEDICINA FAMILIAR">MEDICINA FAMILIAR</option>
+<option value="MEDICINA GENERAL">MEDICINA GENERAL</option>
+<option value="MEDICINA INTERNA">MEDICINA INTERNA</option>
+<option value="NEFROLOGÍA">NEFROLOGÍA</option>
+<option value="NEUMOLOGÍA">NEUMOLOGÍA</option>
+<option value="NEUROCIRUGÍA">NEUROCIRUGÍA</option>
+<option value="NEUROLOGÍA">NEUROLOGÍA</option>
+<option value="NUTRICIÓN">NUTRICIÓN</option>
+<option value="OBSTETRIZ">OBSTETRIZ</option>
+<option value="ODONTOLOGÍA">ODONTOLOGÍA</option>
+<option value="OFTALMOLOGÍA">OFTALMOLOGÍA</option>
+<option value="ONCOLOGÍA">ONCOLOGÍA</option>
+<option value="OPTOMETRÍA">OPTOMETRÍA</option>
+<option value="ORTOPEDIA Y TRAUMATOLOGIA">ORTOPEDIA Y TRAUMATOLOGIA</option>
+<option value="OTORRINOLARINGOLOGÍA">OTORRINOLARINGOLOGÍA</option>
+<option value="PEDIATRÍA">PEDIATRÍA</option>
+<option value="PROFESIONAL TECNICO">PROFESIONAL TECNICO</option>
+<option value="PSICOLOGÍA">PSICOLOGÍA</option>
+<option value="PSIQUIATRÍA">PSIQUIATRÍA</option>
+<option value="REUMATOLOGÍA">REUMATOLOGÍA</option>
+<option value="TERAPIA FÍSICA">TERAPIA FÍSICA</option>
+<option value="UROLOGÍA">UROLOGÍA</option>
+
+
+
+
+
+
+
+            
+          </select>
+          <div id="espe-search-results" class="search-results"></div>
+        </div>
+        <span id="checkEspe" class="check">✔</span>
+      </div>
+    </div>
+    <label>OBSERVACIÓN * <small style="font-weight:normal;color:#777;">(*) obligatorio</small></label>
+    <select id="obsSelect">
+      <option value="">Seleccione motivo...</option>
+
+
+
+      
+      <option value="HISTORIA CLINICA BLOQUEADA">HISTORIA CLINICA BLOQUEADA</option>
+      <option value="NO CUENTA CON VIGENCIA DE ATENCIÓN">NO CUENTA CON VIGENCIA DE ATENCIÓN</option>
+      <option value="NO SE CUENTA CON CITAS DISPONIBLES">NO SE CUENTA CON CITAS DISPONIBLES</option>
+      <option value="NO SE CUENTA CON PROGRAMACIÓN DISPONIBLE">NO SE CUENTA CON PROGRAMACIÓN DISPONIBLE</option>
+      <option value="EEL NO OTORGA CITAS A PACIENTES REFERIDOS">EEL NO OTORGA CITAS A PACIENTES REFERIDOS</option>
+      <option value="EEL NO OTORGA CITAS DE ESPECIALIDADES EN ALGUNAS IPRESS">EEL NO OTORGA CITAS DE ESPECIALIDADES EN ALGUNAS IPRESS</option>
+      <option value="NO HAY CITAS DISPONIBLES DE TELECONSULTA">NO HAY CITAS DISPONIBLES DE TELECONSULTA</option>
+      <option value="PACIENTE ADSCRITO A PROVINCIA">PACIENTE ADSCRITO A PROVINCIA</option>
+      <option value="IPRESS QUE EEL NO OTORGA">IPRESS QUE EEL NO OTORGA</option>
+       <option value="TIPO DE ASEGURADO CON EPS">TIPO DE ASEGURADO CON EPS</option>     
+
+
+
+
+
+
+
+
+      
+    </select>
+    <span id="checkObs" class="check">✔</span>
+    <textarea id="obs" placeholder="Detalles adicionales (si aplica)..." style="margin-top:6px;display:none;"></textarea>
+    <div class="row">
+      <div class="col">
+        <label>CELULAR 1 *</label>
+        <input id="cel1" type="tel" placeholder="Ej: 987654321" maxlength="9" inputmode="numeric" />
+        <span id="checkCel1" class="check">✔</span>
+      </div>
+      <div class="col">
+        <label>CELULAR 2 (CONTINGENCIA)</label>
+        <input id="cel2" type="tel" placeholder="Opcional" maxlength="9" inputmode="numeric" />
+        <span id="checkCel2" class="check">✔</span>
+      </div>
+    </div>
+    <div class="btns">
+      <button class="btn secondary" id="btnNuevo">NUEVO REGISTRO</button>
+      <button class="btn" id="btnGuardar">GUARDAR</button>
+      <button id="btnEditarUltimo" class="btn secondary" style="display: none;">✏️ Editar último (5s)</button>
+    </div>
+    <p class="note">✅ Todos los campos con * son obligatorios. Datos se envían a Google Sheets.</p>
+  </div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const SHEETS_URL = "https://script.google.com/macros/s/AKfycbx9Zjjr3Jp-P-K0dJ2HNq0FowC5uEdQixxIGiQ6YWRbB30WHrqa8YPd8OaVDKNhgyZU/exec";
+
+// 🔒 Duplicados
+function getDuplicadoKey(data) {
+  return `${data.DNI}-${data.IPRESS}-${data.Especialidad}-${data.Observacion}`.toUpperCase();
+}
+let registrosGuardados = JSON.parse(localStorage.getItem('registros_guardados') || '[]');
+if (registrosGuardados.length > 50) {
+  registrosGuardados = registrosGuardados.slice(-50);
+  localStorage.setItem('registros_guardados', JSON.stringify(registrosGuardados));
+}
+function isDuplicado(data) {
+  const key = getDuplicadoKey(data);
+  return registrosGuardados.some(r => getDuplicadoKey(r) === key);
+}
+function guardarEnCache(data) {
+  const r = { ...data, timestamp: Date.now() };
+  registrosGuardados.push(r);
+  if (registrosGuardados.length > 50) registrosGuardados.shift();
+  localStorage.setItem('registros_guardados', JSON.stringify(registrosGuardados));
+  return r;
+}
+
+// ✏️ Botón edición temporal
+let timeoutEditar, ultimoRegistroGuardado = null;
+function mostrarBotonEditarTemporal() {
+  if (timeoutEditar) clearTimeout(timeoutEditar);
+  const btn = $('btnEditarUltimo');
+  btn.style.display = 'inline-block';
+  btn.onclick = () => {
+    if (!ultimoRegistroGuardado) return;
+    // Restaurar
+    $('agente').value = ultimoRegistroGuardado.Agente || '';
+    $('supervisor').value = ultimoRegistroGuardado.Supervisor || '';
+    $('tipoDoc').value = ultimoRegistroGuardado.TipoDoc || 'DNI';
+    $('dni').value = ultimoRegistroGuardado.DNI || '';
+    $('nombres').value = ultimoRegistroGuardado.Nombres || '';
+    $('fechaNacimiento').value = ultimoRegistroGuardado.FechaNac || '';
+    $('sexo').value = ultimoRegistroGuardado.Sexo || '';
+    $('ipress').value = ultimoRegistroGuardado.IPRESS || '';
+    $('espe').value = ultimoRegistroGuardado.Especialidad || '';
+    $('obsSelect').value = ultimoRegistroGuardado.Observacion || '';
+    $('obs').value = ultimoRegistroGuardado.ObsDetalle || '';
+    $('obs').style.display = (ultimoRegistroGuardado.Observacion === 'OTRO') ? 'block' : 'none';
+    $('cel1').value = ultimoRegistroGuardado.Celular1 || '';
+    $('cel2').value = ultimoRegistroGuardado.Celular2 || '';
+    // Sincronizar inputs
+    $('ipress-search').value = $('ipress option[value="' + ultimoRegistroGuardado.IPRESS + '"]')?.text || '';
+    $('espe-search').value = $('espe option[value="' + ultimoRegistroGuardado.Especialidad + '"]')?.text || '';
+    ['agente','supervisor','ipress','espe','obsSelect'].forEach(id => $(id).dispatchEvent(new Event('change')));
+    sessionStorage.setItem('skipDuplicadoCheck', 'true');
+    btn.style.display = 'none';
+    $('dni').focus();
+  };
+  timeoutEditar = setTimeout(() => btn.style.display = 'none', 5000);
+}
+
+// Obs
+$('obsSelect').addEventListener('change', function(){
+  const t = $('obs');
+  if(this.value === 'OTRO'){ t.style.display = 'block'; t.focus(); }
+  else { t.style.display = 'none'; t.value = ''; }
+});
+
+// Fecha/Hora
+function formatoAmigable(d){ return d.toLocaleString('es-PE',{weekday:'long',day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).replace(/^\w/,c=>c.toUpperCase()); }
+function actualizarRegistro(){ $('registro').innerText = formatoAmigable(new Date()); }
+setInterval(actualizarRegistro, 1000);
+actualizarRegistro();
+
+// Fijar
+function applyFijadoVisual(id, isFixed){
+  const f = $(id+'_fijado'), fix = id==='agente'?$('fixAgente'):$('fixSupervisor'), unfix=id==='agente'?$('unfixAgente'):$('unfixSupervisor'), chk=$('check'+id.charAt(0).toUpperCase()+id.slice(1));
+  if(isFixed){ f.classList.add('fijado-visible'); fix.classList.remove('notfixed'); fix.classList.add('fixed'); unfix.classList.remove('fixed'); unfix.classList.add('notfixed'); chk.classList.add('visible'); }
+  else { f.classList.remove('fijado-visible'); fix.classList.remove('fixed'); fix.classList.add('notfixed'); unfix.classList.remove('notfixed'); chk.classList.remove('visible'); }
+}
+function fijar(id,key){ const v=$(id).value.trim(); if(!v) return alert('Seleccione un valor antes de fijar.'); localStorage.setItem(key,v); applyFijadoVisual(id,true); }
+function nofijar(id,key){ localStorage.removeItem(key); applyFijadoVisual(id,false); }
+$('fixAgente').addEventListener('click', ()=>fijar('agente','AGENTE'));
+$('unfixAgente').addEventListener('click', ()=>nofijar('agente','AGENTE'));
+$('fixSupervisor').addEventListener('click', ()=>fijar('supervisor','SUPERVISOR'));
+$('unfixSupervisor').addEventListener('click', ()=>nofijar('supervisor','SUPERVISOR'));
+window.addEventListener('load',()=>{
+  const a=localStorage.getItem('AGENTE'), s=localStorage.getItem('SUPERVISOR');
+  if(a){ $('agente').value=a; applyFijadoVisual('agente',true); }
+  if(s){ $('supervisor').value=s; applyFijadoVisual('supervisor',true); }
+});
+
+// Estado visual
+function showStatusMsg(el, text, type) {
+  const p = el.nextElementSibling;
+  if(p?.classList.contains('status-msg')) p.remove();
+  const span = document.createElement('span');
+  span.className = `status-msg ${type}`;
+  span.innerHTML = `<span>${type==='success'?'✅':type==='warning'?'⚠️':'❌'}</span>${text}`;
+  el.parentNode.insertBefore(span, el.nextSibling);
+}
+function showSuccessField(id, msg = "✔ Listo") {
+  const el = $(id);
+  if(!el) return;
+  el.classList.remove('error-field', 'incomplete');
+  el.classList.add('success');
+  showStatusMsg(el, msg, 'success');
+}
+function showWarningField(id, msg = "⚠ Incompleto") {
+  const el = $(id);
+  if(!el) return;
+  el.classList.remove('success', 'error-field');
+  el.classList.add('incomplete');
+  showStatusMsg(el, msg, 'warning');
+}
+function showErrorField(id, msg = "✘ Inválido") {
+  const el = $(id);
+  if(!el) return;
+  el.classList.remove('success', 'incomplete');
+  el.classList.add('error-field');
+  showStatusMsg(el, msg, 'error');
+}
+function clearFieldStatus(id) {
+  const el = $(id);
+  if(!el) return;
+  el.classList.remove('success', 'incomplete', 'error-field');
+  const m = el.nextElementSibling;
+  if(m?.classList.contains('status-msg')) m.remove();
+}
+
+
+
+
+// ✅ CORREGIDO: buscarDNI limpia TODO antes
+async function buscarDNI(dni){
+  // 🔥 LIMPIEZA TOTAL ANTES DE BUSCAR
+  $('nombres').value = '';
+  $('nombres').readOnly = false;
+  $('fechaNacimiento').value = '';
+  $('sexo').value = '';
+  clearFieldStatus('nombres');
+  clearFieldStatus('fechaNacimiento');
+  clearFieldStatus('sexo');
+
+  const url = `http://172.20.60.152:8000/buscar/${encodeURIComponent(dni)}`;
+  try {
+    const resp = await fetch(url, { timeout: 5000 });
+    if (!resp.ok) return;
+    const data = await resp.json();
+    const d = Object.fromEntries(Object.entries(data).map(([k,v]) => [k.toLowerCase(), v]));
+
+    // ✅ Nombres
+    const nc = d.nombre_completo || d.apellidos_nombres || 
+      (d.apellido_paterno && d.apellido_materno && d.nombres ? `${d.apellido_paterno} ${d.apellido_materno} ${d.nombres}` : '') || '';
+    if (nc) {
+      $('nombres').value = nc.toUpperCase();
+      $('nombres').readOnly = true;
+      showSuccessField('nombres', '✅ Nombre cargado');
+    }
+
+    // ✅ Fecha — NUEVA FUNCIÓN DE PARSING ROBUSTO
+    function parseDate(dateStr) {
+      if (!dateStr || typeof dateStr !== 'string') return null;
+      dateStr = dateStr.trim();
+
+      const formats = [
+        { regex: /^(\d{4})-(\d{1,2})-(\d{1,2})$/, parts: [1, 2, 3] }, // YYYY-MM-DD
+        { regex: /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, parts: [3, 2, 1] }, // DD/MM/YYYY
+        { regex: /^(\d{1,2})-(\d{1,2})-(\d{4})$/, parts: [3, 2, 1] }, // DD-MM-YYYY
+        { regex: /^(\d{4})\/(\d{1,2})\/(\d{1,2})$/, parts: [1, 2, 3] }, // YYYY/MM/DD
+        { regex: /^(\d{8})$/, parts: [1, 2, 3] } // YYYYMMDD
+      ];
+
+      for (let fmt of formats) {
+        const match = dateStr.match(fmt.regex);
+        if (match) {
+          let year, month, day;
+          if (fmt.regex.source === '^\\d{8}$') {
+            year = dateStr.substring(0, 4);
+            month = dateStr.substring(4, 6);
+            day = dateStr.substring(6, 8);
+          } else {
+            year = match[fmt.parts[0]];
+            month = match[fmt.parts[1]];
+            day = match[fmt.parts[2]];
+          }
+
+          // Validar números razonables (evita "121967")
+          if (year.length === 4 && /^[0-9]{4}$/.test(year) && parseInt(year) >= 1900 && parseInt(year) <= 2025 &&
+              month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+            return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+          }
+        }
+      }
+      return null;
+    }
+
+    let fn = d.fecha_nacimiento || d.fecha_nac || d.fechanac;
+    if (fn && typeof fn === 'string') {
+      const parsedDate = parseDate(fn);
+      if (parsedDate) {
+        $('fechaNacimiento').value = parsedDate;
+        showSuccessField('fechaNacimiento', '✅ Fecha cargada');
+      } else {
+        showErrorField('fechaNacimiento', '❌ Fecha inválida');
+      }
+    }
+
+    // ✅ Sexo — SOLO si hay dato claro
+    const sv = (d.sexo || d.genero || d.sex || '').toString().trim().toUpperCase();
+    if (sv === 'M' || sv === 'MASCULINO' || sv.includes('MASC')) {
+      $('sexo').value = 'MASCULINO';
+      showSuccessField('sexo', '✅ Sexo cargado');
+    } else if (sv === 'F' || sv === 'FEMENINO' || sv.includes('FEM')) {
+      $('sexo').value = 'FEMENINO';
+      showSuccessField('sexo', '✅ Sexo cargado');
+    }
+
+    $('checkDni').classList.add('visible');
+    setTimeout(() => $('checkDni').classList.remove('visible'), 2000);
+  } catch (err) {
+    console.warn('Error en buscarDNI:', err);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+// ✅ Dinámico DNI
+$('dni').addEventListener('input', function() {
+  const t = $('tipoDoc').value;
+  let v = this.value;
+  if (t === 'DNI') v = v.replace(/\D/g, '').slice(0,8);
+  else v = v.slice(0,20);
+  if (this.value !== v) this.value = v;
+});
+
+let debounce;
+$('dni').addEventListener('input', function(){
+  clearTimeout(debounce);
+  const v = this.value.trim(), t = $('tipoDoc').value;
+  if (v.length >= 7 && t === 'DNI') debounce = setTimeout(() => buscarDNI(v.padStart(8,'0')), 450);
+});
+
+// Celulares
+function validarCelular(id) {
+  const el = $(id), v = el.value.replace(/\D/g, '').slice(0,9);
+  el.value = v;
+  if (/^\d{7,9}$/.test(v)) showSuccessField(id, '✅ Celular válido');
+}
+$('cel1').addEventListener('input', () => validarCelular('cel1'));
+$('cel2').addEventListener('input', () => validarCelular('cel2'));
+
+
+
+
+// ✅ Validación robusta
+function validateForm() {
+  let ok = true, t = $('tipoDoc').value;
+  const fields = [
+    {id:'agente', valid:v=>!!v.trim(), msg:'Agente obligatorio'},
+    {id:'supervisor', valid:v=>!!v.trim(), msg:'Supervisor obligatorio'},
+    {id:'tipoDoc', valid:v=>!!v.trim(), msg:'Tipo de documento obligatorio'},
+    {id:'dni', valid:v=>{
+      v=v.trim();
+      if(t==='DNI') return /^\d{8}$/.test(v);
+      return v.length>=1 && v.length<=20;
+    }, getMsg:()=>t==='DNI'?'DNI: 8 dígitos':'Documento obligatorio'},
+
+    
+{id:'nombres', valid:v=>v.trim() && /^[A-Z\sÑÁÉÍÓÚÜÓÍA‘\u0081]+$/.test(v.trim().toUpperCase()), msg:'Nombre: solo letras'},
+
+
+
+
+
+   {id:'fechaNacimiento', valid:v=>{
+  if (!v.trim()) return false;
+  const date = new Date(v);
+  // Verifica que sea una fecha real y razonable (no año 121967)
+  return date instanceof Date && !isNaN(date) &&
+         date.getFullYear() >= 1900 && date.getFullYear() <= 2100;
+}, msg:'Fecha inválida o fuera de rango'},
+
+
+
+
+
+
+
+
+
+    {id:'sexo', valid:v=>!!v.trim(), msg:'Sexo obligatorio'},
+    {id:'ipress', valid:v=>!!v.trim(), msg:'IPRESS obligatoria'},
+    {id:'espe', valid:v=>!!v.trim(), msg:'Especialidad obligatoria'},
+    {id:'obsSelect', valid:v=>!!v.trim(), msg:'Motivo obligatorio'}
+  ];
+  
+  let firstErr = null;
+  fields.forEach(f => {
+    const el = $(f.id);
+    if (!el) return;
+    const val = el.value || '';
+    const msg = f.getMsg ? f.getMsg() : f.msg;
+    if (!f.valid(val)) {
+      showErrorField(f.id, `❌ ${msg}`);
+      if (!firstErr) firstErr = el;
+      ok = false;
+    } else clearFieldStatus(f.id);
+  });
+
+  if ($('obsSelect').value === 'OTRO' && !$('obs').value.trim()) {
+    showErrorField('obs', '❌ Detalle obligatorio');
+    if (!firstErr) firstErr = $('obs');
+    ok = false;
+  }
+
+  const c1 = $('cel1').value.replace(/\D/g,'');
+  if (!/^\d{7,9}$/.test(c1)) {
+    showErrorField('cel1', '❌ CELULAR 1: 7-9 dígitos');
+    if (!firstErr) firstErr = $('cel1');
+    ok = false;
+  }
+
+  if (firstErr) {
+    firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (firstErr.id === 'ipress') $('ipress-search').focus();
+    else if (firstErr.id === 'espe') $('espe-search').focus();
+    else firstErr.focus();
+  }
+  return ok;
+}
+
+// 📤 Envío
+async function enviarAGoogleSheets() {
+  const data = {
+    Agente: $('agente').value,
+    Supervisor: $('supervisor').value,
+    TipoDoc: $('tipoDoc').value,
+    DNI: $('dni').value.trim(),
+    Nombres: $('nombres').value,
+    FechaNac: $('fechaNacimiento').value,
+    Sexo: $('sexo').value,
+    IPRESS: $('ipress').value,
+    Especialidad: $('espe').value,
+    Observacion: $('obsSelect').value,
+    ObsDetalle: $('obs').value,
+    Celular1: $('cel1').value,
+    Celular2: $('cel2').value || ''
+  };
+  try {
+    if (sessionStorage.getItem('skipDuplicadoCheck') !== 'true' && isDuplicado(data)) {
+      const key = getDuplicadoKey(data), dup = registrosGuardados.find(r => getDuplicadoKey(r) === key) || data;
+      const toast = document.createElement('div');
+      toast.className = 'toast-dup';
+      toast.innerHTML = `
+        <div style="display:flex; align-items:start; gap:8px;">
+          <span style="font-size:20px;">⚠️</span>
+          <div><strong>Registro duplicado</strong><br>
+          <small>Especialidad: ${dup.Especialidad}<br>IPRESS: ${dup.IPRESS}<br>Documento: ${dup.DNI}</small></div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button onclick="editarUltimoDesdeToast()" style="flex:1; padding:6px 12px; background:#28a745; color:white; border:none; border-radius:4px; font-size:13px;">✏️ Editar último</button>
+          <button onclick="this.closest('.toast-dup').remove()" style="padding:6px 10px; background:#6c757d; color:white; border:none; border-radius:4px;">✕</button>
+        </div>
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 5000);
+      $('ipress-search').focus();
+      return { duplicate: true };
+    }
+    await fetch(SHEETS_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    return { success: true, data };
+  } catch (err) {
+    return { error: true, message: err.message };
+  }
+}
+window.editarUltimoDesdeToast = function() {
+  const b = $('btnEditarUltimo');
+  if (b.style.display !== 'none') b.click();
+  else mostrarBotonEditarTemporal();
+  document.querySelector('.toast-dup')?.remove();
+};
+
+// Guardar
+$('btnGuardar').addEventListener('click', async function(e){
+  e.preventDefault();
+  document.querySelectorAll('.status-msg').forEach(el => el.remove());
+  if (!validateForm()) return;
+  
+  const b = $('btnGuardar');
+  b.classList.add('loading'); b.disabled = true;
+  
+  ['agente','supervisor','tipoDoc','dni','nombres','fechaNacimiento','sexo','ipress','espe','obsSelect','cel1'].forEach(id => showSuccessField(id, '✅ Listo'));
+  if ($('obsSelect').value === 'OTRO') showSuccessField('obs', '✅ Detalle');
+  if ($('cel2').value.trim()) showSuccessField('cel2', '✅ Listo');
+  
+  const r = await enviarAGoogleSheets();
+  setTimeout(() => {
+    b.classList.remove('loading'); b.disabled = false;
+    if (r.duplicate) return;
+    if (r.success) {
+      showToast("✅ Registro guardado", true);
+      ultimoRegistroGuardado = guardarEnCache(r.data);
+      mostrarBotonEditarTemporal();
+      setTimeout(() => {
+        const a = localStorage.getItem('AGENTE'), s = localStorage.getItem('SUPERVISOR');
+        ['dni','nombres','fechaNacimiento','sexo','obs','cel1','cel2'].forEach(id => $(id).value = '');
+        ['tipoDoc','sexo','ipress','espe','obsSelect'].forEach(id => { $(id).value = ''; $(id).dispatchEvent(new Event('change')); });
+        $('ipress-search').value = ''; $('espe-search').value = ''; $('obs').style.display = 'none';
+        if (a) $('agente').value = a;
+        if (s) $('supervisor').value = s;
+        document.querySelectorAll('.status-msg').forEach(el => el.remove());
+        document.querySelectorAll('input, select').forEach(el => el.classList.remove('success', 'incomplete', 'error-field'));
+        actualizarRegistro();
+      }, 1000);
+    } else showToast("❌ Error al guardar", false);
+  }, 600);
+});
+
+// 🔍 Buscadores robustos
+function initSearcher(sid, id, rid) {
+  const s = $(sid), i = $(id), r = $(rid), opts = Array.from(i.options).map(o => ({v:o.value, t:o.text}));
+  s.addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    r.innerHTML = '';
+    if (!q) return r.style.display = 'none';
+    const m = opts.filter(o => o.t.toLowerCase().includes(q) || o.v.toLowerCase().includes(q));
+    if (m.length === 0) r.innerHTML = '<div class="search-no-results">No se encontraron resultados</div>';
+    else m.forEach(o => {
+      const e = document.createElement('div');
+      e.className = 'search-result-item';
+      e.textContent = o.t;
+      e.dataset.v = o.v;
+      e.onclick = () => { i.value = o.v; s.value = o.t; r.style.display = 'none'; i.dispatchEvent(new Event('change', {bubbles:true})); };
+      r.appendChild(e);
+    });
+    r.style.display = 'block';
+  });
+  s.addEventListener('focus', function() {
+    setTimeout(() => {
+      if (this.value.trim() === '' && r.style.display === 'none') {
+        r.innerHTML = '';
+        opts.forEach(o => {
+          const e = document.createElement('div');
+          e.className = 'search-result-item';
+          e.textContent = o.t;
+          e.dataset.v = o.v;
+          e.onclick = () => { i.value = o.v; s.value = o.t; r.style.display = 'none'; i.dispatchEvent(new Event('change', {bubbles:true})); };
+          r.appendChild(e);
+        });
+        r.style.display = 'block';
+      }
+    }, 50);
+  });
+  document.addEventListener('click', e => { if (!s.contains(e.target) && !r.contains(e.target)) r.style.display = 'none'; });
+  s.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const items = Array.from(r.querySelectorAll('.search-result-item'));
+      if (!items.length) return;
+      let idx = -1, sel = r.querySelector('.selected');
+      if (sel) idx = items.indexOf(sel);
+      idx = e.key === 'ArrowDown' ? (idx + 1) % items.length : (idx - 1 + items.length) % items.length;
+      items.forEach((i,j) => i.classList.toggle('selected', j === idx));
+      items[idx]?.scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const item = r.querySelector('.selected');
+      if (item) {
+        i.value = item.dataset.v;
+        s.value = item.textContent;
+        r.style.display = 'none';
+        i.dispatchEvent(new Event('change', {bubbles:true}));
+      }
+    }
+  });
+}
+
+initSearcher('agente-search', 'agente', 'agente-search-results');
+initSearcher('supervisor-search', 'supervisor', 'supervisor-search-results');
+initSearcher('ipress-search', 'ipress', 'ipress-search-results');
+initSearcher('espe-search', 'espe', 'espe-search-results');
+
+document.addEventListener('DOMContentLoaded', function() {
+  ['agente','supervisor','ipress','espe'].forEach(id => {
+    $(id).addEventListener('change', function() {
+      const t = this.options[this.selectedIndex]?.text || '';
+      $(id + '-search').value = t;
+    });
+  });
+});
+
+
+  
+// Nombres editable — ✅ PERMITE  (U+0081)
+$('nombres').addEventListener('input', function() {
+  if (!this.readOnly) {
+    this.value = this.value.replace(/[^a-zA-Z\sÑñÁáÉéÍíÓóÚúÜü\u0081]/g, '').toUpperCase();
+  }
+});
+
+
+
+  
+// Nuevo
+$('btnNuevo').addEventListener('click', function(e) {
+  e.preventDefault();
+  const a = localStorage.getItem('AGENTE'), s = localStorage.getItem('SUPERVISOR');
+  ['dni','nombres','fechaNacimiento','sexo','obs','cel1','cel2'].forEach(id => $(id).value = '');
+  ['tipoDoc','sexo','ipress','espe','obsSelect'].forEach(id => { $(id).value = ''; $(id).dispatchEvent(new Event('change')); });
+  $('ipress-search').value = ''; $('espe-search').value = ''; $('obs').style.display = 'none';
+  if (a) { $('agente').value = a; $('agente').dispatchEvent(new Event('change')); }
+  if (s) { $('supervisor').value = s; $('supervisor').dispatchEvent(new Event('change')); }
+  document.querySelectorAll('.status-msg').forEach(el => el.remove());
+  document.querySelectorAll('input, select').forEach(el => el.classList.remove('success', 'incomplete', 'error-field'));
+  actualizarRegistro();
+});
+
+// ✅ Toast mejorado
+function showToast(msg, ok = true) {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed; top: 24px; right: 24px; 
+    background: ${ok ? '#d4edda' : '#f8d7da'}; 
+    color: ${ok ? '#155724' : '#721c24'};
+    border: 1px solid ${ok ? '#c3e6cb' : '#f5c6cb'};
+    padding: 14px 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    font-weight: 700; 
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideInRight 0.3s, fadeOutDown 0.3s 2.7s forwards;
+  `;
+  toast.innerHTML = `<span style="font-size:20px;">${ok?'✅':'⚠️'}</span>${msg}`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
