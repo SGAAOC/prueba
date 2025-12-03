@@ -280,24 +280,33 @@
     background: #28a745 !important;
     animation: fadeIn 0.3s, pulseSuccess 0.8s;
   }
-  /* 🍞 Toast personalizado */
+  /* 🍞 Toast personalizado — NUEVO (mejorado) */
   .toast-dup {
     position: fixed;
     top: 20px;
     right: 20px;
     background: #fff3cd;
     color: #856404;
-    border: 1px solid #ffeaa7;
+    border: 2px solid #ffc107;
     padding: 16px 20px;
-    border-radius: 8px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    font-weight: 600;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    font-weight: 700;
     z-index: 10000;
-    max-width: 360px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    animation: slideInRight 0.3s, fadeOutDown 0.3s 4.7s forwards;
+    max-width: 380px;
+    animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+               shake 0.5s 0.2s,
+               fadeOutDown 0.4s 4.5s forwards;
+    text-align: left;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
   }
 </style>
 </head>
@@ -318,9 +327,6 @@
             <input type="text" id="agente-search" class="search-input" placeholder="Buscar agente..." autocomplete="off" />
           </div>
           <select id="agente" style="display: none;">
-
-
-
 <option value="5078 - SALINAS SIMON DELIA ROSA">5078 - SALINAS SIMON DELIA ROSA</option>
 <option value="5169 - MORE ZAVALETA ANTUANET ROSALYN">5169 - MORE ZAVALETA ANTUANET ROSALYN</option>
 <option value="5156 - VIDAL VALERA SANDRA">5156 - VIDAL VALERA SANDRA</option>
@@ -563,7 +569,6 @@
 <option value="5420 - PEREZ PEZO CRISTINA">5420 - PÉREZ PEZO CRISTINA THALÍA</option>
 <option value="5421 - LLANCARI VASQUEZ ROMINA">5421 - LLANCARI VÁSQUEZ ROMINA YAMAIRA</option>
 <option value="5423 - VARGAS CHIRINOS MERCEDES">5423 - VARGAS CHIRINOS DE SAGASTEGUI MERCEDES SOLEDAD</option>
-
 <option value="5425 - BARRIENTOS VILLANUEVA DORITA">5425 - BARRIENTOS VILLANUEVA DORITA DEL PILAR</option>
 <option value="5426 - SOLANO TIPARRA GIANELLA">5426 - SOLANO TIPARRA GIANELLA LIZET</option>
 <option value="5427 - OCHOA CAMPOVERDE DIANA MARIZA">5427 - OCHOA CAMPOVERDE DIANA MARIZA</option>
@@ -705,7 +710,7 @@
 <option value="6793 - HUARIPATA BENITES JUAQUINA">6793 - CAYLLAHUA BENITES RICHARD BRIAN</option>
 <option value="6794 - VILLACORTA ROMERO ROXANA">6794 - VILLACORTA ROMERO ROXANA PATRICIA</option>
 <option value="6795 - HUAMANTINCO TORRES FLORENCIA ALEJANDRA">6795 - HUAMANTINCO TORRES FLORENCIA ALEJANDRA</option>
-<option value="6797 - OSORIO CUADROS ELIZABETH ROSA">6797 - OSORIO CUADROS ELIZABETH ROSA</option>option>
+<option value="6797 - OSORIO CUADROS ELIZABETH ROSA">6797 - OSORIO CUADROS ELIZABETH ROSA</option>
 <option value="6798 - GARCIA SILVERA ANA">6798 - GARCÍA SILVA ANA</option>
 <option value="6799 - MUÑOZ CERDAN OLGA">6799 - MUÑOZ CERDÁN OLGA</option>
 <option value="6800 - NAJARRO ESPINOZA PIERO JESUS">6800 - ÑAHUI CANCHO MARÍA CLAUDIA</option>
@@ -732,10 +737,6 @@
 <option value="6832 - LIMAHUAYA HALLASI MARTHA">6832 - LIMAHUAYA HALLASI MARTHA</option>
 <option value="6835 - HUALLANCA PAREDES RAQUEL MARGOT">6835 - HUALLANCA PAREDES RAQUEL MARGOT</option>
 <option value="6836 - HUAYLLA DE LA CRUZ ALEXIS">6836 - HUAYLLA DE LA CRUZ ALEXIS</option>
-
-
-
-
           </select>
           <div id="agente-search-results" class="search-results"></div>
         </div>
@@ -754,8 +755,6 @@
             <input type="text" id="supervisor-search" class="search-input" placeholder="Buscar supervisor..." autocomplete="off" />
           </div>
           <select id="supervisor" style="display: none;">
-
-
 <option value="RAMOS GUEVARA CYNTHIA KATHEEN">RAMOS GUEVARA CYNTHIA KATHEEN</option>           
 <option value="ALTAMIRANO ZUÑIGA SHARON LUCIA">ALTAMIRANO ZUÑIGA SHARON LUCIA</option>
 <option value="ARAGON CAMPOS INGRI JANETT">ARAGON CAMPOS INGRI JANETT</option>
@@ -773,13 +772,6 @@
 <option value="SALES TELLO JIMENA CONSUELO">SALES TELLO JIMENA CONSUELO</option>
 <option value="SANTILLANA RODRIGUEZ LAURA LUZ">SANTILLANA RODRIGUEZ LAURA LUZ</option>
 <option value="UGAZ JEU MONICA">UGAZ JEU MONICA</option>
-
-
-
-
-
-
-            
           </select>
           <div id="supervisor-search-results" class="search-results"></div>
         </div>
@@ -814,14 +806,10 @@
     <span id="checkNombres" class="check">✔</span>
     <div class="row">
       <div class="col">
-
-        
         <label>FECHA DE NACIMIENTO *</label>
         <input id="fechaNacimiento" type="date" />
         <span id="checkFechaNacimiento" class="check">✔</span>
       </div>
-
-      
       <div class="col">
         <label>SEXO *</label>
         <select id="sexo">
@@ -841,8 +829,6 @@
             <input type="text" id="ipress-search" class="search-input" placeholder="Buscar IPRESS..." autocomplete="off" />
           </div>
           <select id="ipress" required style="display: none;">
-
-
 <option value="CM ANCIJE">C.M. ANCIJE</option>
 <option value="CM MALA">C.M. MALA</option>
 <option value="CAP II CHANCAY">CAP II CHANCAY</option>
@@ -864,20 +850,16 @@
 <option value="CAP III SAN ISIDRO">CAP III SAN ISIDRO</option>
 <option value="CAP III SAN JUAN DE MIRAFLORES">CAP III SAN JUAN DE MIRAFLORES</option>
 <option value="CAP III SURQUILLO">CAP III SURQUILLO</option>
-
-            
 <option value="HI AURELIO DIAZ-UFANO Y PERAL">H.I AURELIO DÍAZ-UFANO Y PERAL</option>
 <option value="HI CARLOS ALCANTARA BUTTERFIELD">H.I CARLOS ALCÁNTARA BUTTERFIELD</option>
 <option value="HI JORGE VOTO BERNALLES CORPANCHO">H.I JORGE VOTO BERNALLES CORPANCHO</option>
 <option value="HI MARINO MOLINA SCIPPA">H.I MARINO MOLINA SCIPPA</option>
 <option value="HI OCTAVIO MONGRUT MUNOZ">H.I OCTAVIO MONGRUT MUÑOZ</option>
 <option value="HI ULDARICO ROCCA FERNANDEZ">H.I ULDÁRICO ROCCA FERNÁNDEZ</option>
-
 <option value="HII ALBERTO LEONARDO BARTON THOMPSON">H.II ALBERTO LEONARDO BARTON THOMPSON</option>            
 <option value="HII CANETE">H.II CAÑETE</option>
 <option value="HII GUSTAVO LANATTA LUJAN">H.II GUSTAVO LANATTA LUJÁN</option>
 <option value="HII GUILLERMO KAELIN DE LA FUENTE">H.II GUILLERMO KAELIN DE LA FUENTE</option>
-            
 <option value="HII LIMA NORTE - CALLAO L NEGREIROS V">H.II LIMA NORTE - CALLAO L. NEGREIROS V.</option>
 <option value="HII RAMON CASTILLA">H.II RAMÓN CASTILLA</option>
 <option value="HII VITARTE">H.II VITARTE</option>
@@ -886,22 +868,18 @@
 <option value="HN ALBERTO SABOGAL SOLOGUREN">H.N. ALBERTO SABOGAL SOLOGUREN</option>
 <option value="HN EDGARDO REBAGLIATI MARTINS">H.N. EDGARDO REBAGLIATI MARTINS</option>
 <option value="HN G.ALMENARA">H.N. G.ALMENARA</option>
-            
 <option value="IPRESS CLINICA SAN BARTOLOME - HUACHO">IPRESS CLÍNICA SAN BARTOLOMÉ - HUACHO</option>
 <option value="IPRESS CLINICA SAN PEDRO">IPRESS CLÍNICA SAN PEDRO</option>
 <option value="IPRESS LOS OLIVOS">IPRESS LOS OLIVOS</option>   
 <option value="IPRESS EL TREBOL">IPRESS EL TREBOL</option> 
 <option value="IPRESS PRO LIMA">IPRESS PRO LIMA</option>
 <option value="IPRESS VILLA SOL">IPRESS VILLA SOL</option>            
-
-            
 <option value="POL CHINCHA">POL. CHINCHA</option>
 <option value="POL CHOSICA">POL. CHOSICA</option>
 <option value="POL COMPLEJIDAD CRECIENTE SAN NICOLAS">POL. COMPLEJIDAD CRECIENTE SAN NICOLÁS</option>
 <option value="POL FIORI">POL. FIORI</option>
 <option value="POL FRANCISCO PIZARRO">POL. FRANCISCO PIZARRO</option>
 <option value="POL JUAN JOSE RODRIGUEZ LAZO">POL. JUAN JOSÉ RODRÍGUEZ LAZO</option           
-
 <option value="POL PROCERES">POL. PRÓCERES</option>
 <option value="POL SAN LUIS">POL. SAN LUIS</option>
 <option value="POL SANTA CRUZ">POL. SANTA CRUZ</option>
@@ -911,12 +889,6 @@
 <option value="RETABLO - COMAS">RETABLO - COMAS</option>
 <option value="CENTRO DE ATENCION INTEGRAL DE DIABETES E HIPERTENSION ARTERIAL CEDHI">CENTRO DE ATENCIÓN INTEGRAL DE DIABETES E HIPERTENSIÓN ARTERIAL CEDHI</option>
 <option value="POL PABLO BERMUDEZ">POL. PABLO BERMÚDEZ</option>
-
-
-
-
-
-            
           </select>
           <div id="ipress-search-results" class="search-results"></div>
         </div>
@@ -930,9 +902,6 @@
             <input type="text" id="espe-search" class="search-input" placeholder="Buscar especialidad..." autocomplete="off" />
           </div>
           <select id="espe" style="display: none;">
-
-
-            
 <option value="CARDIOLOGÍA">CARDIOLOGÍA</option>
 <option value="CIRUGÍA CARDIOVASCULAR">CIRUGÍA CARDIOVASCULAR</option>
 <option value="CIRUGÍA GENERAL">CIRUGÍA GENERAL</option>
@@ -971,14 +940,6 @@
 <option value="REUMATOLOGÍA">REUMATOLOGÍA</option>
 <option value="TERAPIA FÍSICA">TERAPIA FÍSICA</option>
 <option value="UROLOGÍA">UROLOGÍA</option>
-
-
-
-
-
-
-
-            
           </select>
           <div id="espe-search-results" class="search-results"></div>
         </div>
@@ -988,10 +949,6 @@
     <label>OBSERVACIÓN * <small style="font-weight:normal;color:#777;">(*) obligatorio</small></label>
     <select id="obsSelect">
       <option value="">Seleccione motivo...</option>
-
-
-
-      
       <option value="HISTORIA CLINICA BLOQUEADA">HISTORIA CLINICA BLOQUEADA</option>
       <option value="NO CUENTA CON VIGENCIA DE ATENCIÓN">NO CUENTA CON VIGENCIA DE ATENCIÓN</option>
       <option value="NO SE CUENTA CON CITAS DISPONIBLES">NO SE CUENTA CON CITAS DISPONIBLES</option>
@@ -1002,15 +959,6 @@
       <option value="PACIENTE ADSCRITO A PROVINCIA">PACIENTE ADSCRITO A PROVINCIA</option>
       <option value="IPRESS QUE EEL NO OTORGA">IPRESS QUE EEL NO OTORGA</option>
        <option value="TIPO DE ASEGURADO CON EPS">TIPO DE ASEGURADO CON EPS</option>     
-
-
-
-
-
-
-
-
-      
     </select>
     <span id="checkObs" class="check">✔</span>
     <textarea id="obs" placeholder="Detalles adicionales (si aplica)..." style="margin-top:6px;display:none;"></textarea>
@@ -1038,23 +986,49 @@
 const $ = id => document.getElementById(id);
 const SHEETS_URL = "https://script.google.com/macros/s/AKfycbx9Zjjr3Jp-P-K0dJ2HNq0FowC5uEdQixxIGiQ6YWRbB30WHrqa8YPd8OaVDKNhgyZU/exec";
 
-// 🔒 Duplicados
+// 🔒 DUPLICADO — NUEVA LÓGICA: SOLO HOY
 function getDuplicadoKey(data) {
   return `${data.DNI}-${data.IPRESS}-${data.Especialidad}-${data.Observacion}`.toUpperCase();
 }
-let registrosGuardados = JSON.parse(localStorage.getItem('registros_guardados') || '[]');
-if (registrosGuardados.length > 50) {
-  registrosGuardados = registrosGuardados.slice(-50);
+
+// ✅ Manejo seguro de localStorage
+function safeGetStorage(key, defaultValue = []) {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : defaultValue;
+  } catch (e) {
+    return defaultValue;
+  }
+}
+
+// 🔁 Carga registros (solo últimos 200)
+let registrosGuardados = safeGetStorage('registros_guardados');
+if (registrosGuardados.length > 200) {
+  registrosGuardados = registrosGuardados.slice(-200);
   localStorage.setItem('registros_guardados', JSON.stringify(registrosGuardados));
 }
-function isDuplicado(data) {
+
+// ✅ NUEVO: duplicado solo HOY
+function isDuplicadoHoy(data) {
+  const hoy = new Date().toISOString().split('T')[0]; // "2025-12-03"
   const key = getDuplicadoKey(data);
-  return registrosGuardados.some(r => getDuplicadoKey(r) === key);
+  return registrosGuardados.find(r => 
+    r.fechaDia === hoy && getDuplicadoKey(r) === key
+  );
 }
+
+// ✅ NUEVO: guardar con metadatos
 function guardarEnCache(data) {
-  const r = { ...data, timestamp: Date.now() };
+  const now = new Date();
+  const r = {
+    ...data,
+    timestamp: now.getTime(),
+    fechaDia: now.toISOString().split('T')[0],
+    agente: data.Agente,
+    horaRegistro: now.toTimeString().substring(0, 8)
+  };
   registrosGuardados.push(r);
-  if (registrosGuardados.length > 50) registrosGuardados.shift();
+  if (registrosGuardados.length > 200) registrosGuardados.shift();
   localStorage.setItem('registros_guardados', JSON.stringify(registrosGuardados));
   return r;
 }
@@ -1067,7 +1041,6 @@ function mostrarBotonEditarTemporal() {
   btn.style.display = 'inline-block';
   btn.onclick = () => {
     if (!ultimoRegistroGuardado) return;
-    // Restaurar
     $('agente').value = ultimoRegistroGuardado.Agente || '';
     $('supervisor').value = ultimoRegistroGuardado.Supervisor || '';
     $('tipoDoc').value = ultimoRegistroGuardado.TipoDoc || 'DNI';
@@ -1082,7 +1055,6 @@ function mostrarBotonEditarTemporal() {
     $('obs').style.display = (ultimoRegistroGuardado.Observacion === 'OTRO') ? 'block' : 'none';
     $('cel1').value = ultimoRegistroGuardado.Celular1 || '';
     $('cel2').value = ultimoRegistroGuardado.Celular2 || '';
-    // Sincronizar inputs
     $('ipress-search').value = $('ipress option[value="' + ultimoRegistroGuardado.IPRESS + '"]')?.text || '';
     $('espe-search').value = $('espe option[value="' + ultimoRegistroGuardado.Especialidad + '"]')?.text || '';
     ['agente','supervisor','ipress','espe','obsSelect'].forEach(id => $(id).dispatchEvent(new Event('change')));
@@ -1108,7 +1080,7 @@ actualizarRegistro();
 
 // Fijar
 function applyFijadoVisual(id, isFixed){
-  const f = $(id+'_fijado'), fix = id==='agente'?$('fixAgente'):$('fixSupervisor'), unfix=id==='agente'?$('unfixAgente'):$('unfixSupervisor'), chk=$('check'+id.charAt(0).toUpperCase()+id.slice(1));
+  const f = $(id+'_fijado'), fix = id==='agente'?$('fixAgente'):$('unfixAgente'), unfix=id==='agente'?$('unfixAgente'):$('unfixSupervisor'), chk=$('check'+id.charAt(0).toUpperCase()+id.slice(1));
   if(isFixed){ f.classList.add('fijado-visible'); fix.classList.remove('notfixed'); fix.classList.add('fixed'); unfix.classList.remove('fixed'); unfix.classList.add('notfixed'); chk.classList.add('visible'); }
   else { f.classList.remove('fijado-visible'); fix.classList.remove('fixed'); fix.classList.add('notfixed'); unfix.classList.remove('notfixed'); chk.classList.remove('visible'); }
 }
@@ -1162,12 +1134,8 @@ function clearFieldStatus(id) {
   if(m?.classList.contains('status-msg')) m.remove();
 }
 
-
-
-
-// ✅ CORREGIDO: buscarDNI limpia TODO antes
+// ✅ buscarDNI con timeout real (AbortController)
 async function buscarDNI(dni){
-  // 🔥 LIMPIEZA TOTAL ANTES DE BUSCAR
   $('nombres').value = '';
   $('nombres').readOnly = false;
   $('fechaNacimiento').value = '';
@@ -1175,15 +1143,15 @@ async function buscarDNI(dni){
   clearFieldStatus('nombres');
   clearFieldStatus('fechaNacimiento');
   clearFieldStatus('sexo');
-
   const url = `http://172.20.60.152:8000/buscar/${encodeURIComponent(dni)}`;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
   try {
-    const resp = await fetch(url, { timeout: 5000 });
+    const resp = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
     if (!resp.ok) return;
     const data = await resp.json();
     const d = Object.fromEntries(Object.entries(data).map(([k,v]) => [k.toLowerCase(), v]));
-
-    // ✅ Nombres
     const nc = d.nombre_completo || d.apellidos_nombres || 
       (d.apellido_paterno && d.apellido_materno && d.nombres ? `${d.apellido_paterno} ${d.apellido_materno} ${d.nombres}` : '') || '';
     if (nc) {
@@ -1191,20 +1159,16 @@ async function buscarDNI(dni){
       $('nombres').readOnly = true;
       showSuccessField('nombres', '✅ Nombre cargado');
     }
-
-    // ✅ Fecha — NUEVA FUNCIÓN DE PARSING ROBUSTO
     function parseDate(dateStr) {
       if (!dateStr || typeof dateStr !== 'string') return null;
       dateStr = dateStr.trim();
-
       const formats = [
-        { regex: /^(\d{4})-(\d{1,2})-(\d{1,2})$/, parts: [1, 2, 3] }, // YYYY-MM-DD
-        { regex: /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, parts: [3, 2, 1] }, // DD/MM/YYYY
-        { regex: /^(\d{1,2})-(\d{1,2})-(\d{4})$/, parts: [3, 2, 1] }, // DD-MM-YYYY
-        { regex: /^(\d{4})\/(\d{1,2})\/(\d{1,2})$/, parts: [1, 2, 3] }, // YYYY/MM/DD
-        { regex: /^(\d{8})$/, parts: [1, 2, 3] } // YYYYMMDD
+        { regex: /^(\d{4})-(\d{1,2})-(\d{1,2})$/, parts: [1, 2, 3] },
+        { regex: /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, parts: [3, 2, 1] },
+        { regex: /^(\d{1,2})-(\d{1,2})-(\d{4})$/, parts: [3, 2, 1] },
+        { regex: /^(\d{4})\/(\d{1,2})\/(\d{1,2})$/, parts: [1, 2, 3] },
+        { regex: /^(\d{8})$/, parts: [1, 2, 3] }
       ];
-
       for (let fmt of formats) {
         const match = dateStr.match(fmt.regex);
         if (match) {
@@ -1218,9 +1182,7 @@ async function buscarDNI(dni){
             month = match[fmt.parts[1]];
             day = match[fmt.parts[2]];
           }
-
-          // Validar números razonables (evita "121967")
-          if (year.length === 4 && /^[0-9]{4}$/.test(year) && parseInt(year) >= 1900 && parseInt(year) <= 2025 &&
+          if (year.length === 4 && /^[0-9]{4}$/.test(year) && parseInt(year) >= 1900 && parseInt(year) <= 2100 &&
               month >= 1 && month <= 12 && day >= 1 && day <= 31) {
             return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
           }
@@ -1228,7 +1190,6 @@ async function buscarDNI(dni){
       }
       return null;
     }
-
     let fn = d.fecha_nacimiento || d.fecha_nac || d.fechanac;
     if (fn && typeof fn === 'string') {
       const parsedDate = parseDate(fn);
@@ -1239,8 +1200,6 @@ async function buscarDNI(dni){
         showErrorField('fechaNacimiento', '❌ Fecha inválida');
       }
     }
-
-    // ✅ Sexo — SOLO si hay dato claro
     const sv = (d.sexo || d.genero || d.sex || '').toString().trim().toUpperCase();
     if (sv === 'M' || sv === 'MASCULINO' || sv.includes('MASC')) {
       $('sexo').value = 'MASCULINO';
@@ -1249,23 +1208,16 @@ async function buscarDNI(dni){
       $('sexo').value = 'FEMENINO';
       showSuccessField('sexo', '✅ Sexo cargado');
     }
-
     $('checkDni').classList.add('visible');
     setTimeout(() => $('checkDni').classList.remove('visible'), 2000);
   } catch (err) {
-    console.warn('Error en buscarDNI:', err);
+    if (err.name === 'AbortError') {
+      showErrorField('dni', '⏰ Tiempo de búsqueda agotado');
+    } else {
+      console.warn('Error en buscarDNI:', err);
+    }
   }
 }
-
-
-
-
-
-
-
-
-
-
 
 // ✅ Dinámico DNI
 $('dni').addEventListener('input', function() {
@@ -1275,25 +1227,12 @@ $('dni').addEventListener('input', function() {
   else v = v.slice(0,20);
   if (this.value !== v) this.value = v;
 });
-
 let debounce;
 $('dni').addEventListener('input', function(){
   clearTimeout(debounce);
   const v = this.value.trim(), t = $('tipoDoc').value;
   if (v.length >= 7 && t === 'DNI') debounce = setTimeout(() => buscarDNI(v.padStart(8,'0')), 450);
 });
-
-// Celulares
-function validarCelular(id) {
-  const el = $(id), v = el.value.replace(/\D/g, '').slice(0,9);
-  el.value = v;
-  if (/^\d{7,9}$/.test(v)) showSuccessField(id, '✅ Celular válido');
-}
-$('cel1').addEventListener('input', () => validarCelular('cel1'));
-$('cel2').addEventListener('input', () => validarCelular('cel2'));
-
-
-
 
 // ✅ Validación robusta
 function validateForm() {
@@ -1304,39 +1243,19 @@ function validateForm() {
     {id:'tipoDoc', valid:v=>!!v.trim(), msg:'Tipo de documento obligatorio'},
     {id:'dni', valid:v=>{
       v=v.trim();
-      if(t==='DNI') return /^\d{8}$/.test(v);
-      return v.length>=1 && v.length<=20;
-    }, getMsg:()=>t==='DNI'?'DNI: 8 dígitos':'Documento obligatorio'},
-
-    
-{id:'nombres', valid:v=>v.trim() && /^[A-Z\sÑÁÉÍÓÚÜÓÍA‘\u0081]+$/.test(v.trim().toUpperCase()), msg:'Nombre: solo letras'},
-
-
-
-
-
-   {id:'fechaNacimiento', valid:v=>{
-  if (!v.trim()) return false;
-  const date = new Date(v);
-  // Verifica que sea una fecha real y razonable (no año 121967)
-  return date instanceof Date && !isNaN(date) &&
-         date.getFullYear() >= 1900 && date.getFullYear() <= 2100;
-}, msg:'Fecha inválida o fuera de rango'},
-
-
-
-
-
-
-
-
-
+      return t==='DNI' ? /^\d{8}$/.test(v) : v.length>=1 && v.length<=20;
+    }, getMsg:() => t==='DNI'?'DNI: 8 dígitos':'Documento obligatorio'},
+    {id:'nombres', valid:v=>v.trim() && /^[A-Z\sÑÁÉÍÓÚÜÓÍA‘\-]+$/.test(v.trim().toUpperCase()), msg:'Nombre: solo letras'},
+    {id:'fechaNacimiento', valid:v=>{
+      if (!v.trim()) return false;
+      const date = new Date(v);
+      return date instanceof Date && !isNaN(date) && date.getFullYear() >= 1900 && date.getFullYear() <= 2100;
+    }, msg:'Fecha inválida o fuera de rango'},
     {id:'sexo', valid:v=>!!v.trim(), msg:'Sexo obligatorio'},
     {id:'ipress', valid:v=>!!v.trim(), msg:'IPRESS obligatoria'},
     {id:'espe', valid:v=>!!v.trim(), msg:'Especialidad obligatoria'},
     {id:'obsSelect', valid:v=>!!v.trim(), msg:'Motivo obligatorio'}
   ];
-  
   let firstErr = null;
   fields.forEach(f => {
     const el = $(f.id);
@@ -1349,20 +1268,17 @@ function validateForm() {
       ok = false;
     } else clearFieldStatus(f.id);
   });
-
   if ($('obsSelect').value === 'OTRO' && !$('obs').value.trim()) {
     showErrorField('obs', '❌ Detalle obligatorio');
     if (!firstErr) firstErr = $('obs');
     ok = false;
   }
-
   const c1 = $('cel1').value.replace(/\D/g,'');
   if (!/^\d{7,9}$/.test(c1)) {
     showErrorField('cel1', '❌ CELULAR 1: 7-9 dígitos');
     if (!firstErr) firstErr = $('cel1');
     ok = false;
   }
-
   if (firstErr) {
     firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
     if (firstErr.id === 'ipress') $('ipress-search').focus();
@@ -1372,7 +1288,7 @@ function validateForm() {
   return ok;
 }
 
-// 📤 Envío
+// 📤 Envío — ✅ NUEVA LÓGICA CON ALERTA AMIGA
 async function enviarAGoogleSheets() {
   const data = {
     Agente: $('agente').value,
@@ -1389,33 +1305,88 @@ async function enviarAGoogleSheets() {
     Celular1: $('cel1').value,
     Celular2: $('cel2').value || ''
   };
+
   try {
-    if (sessionStorage.getItem('skipDuplicadoCheck') !== 'true' && isDuplicado(data)) {
-      const key = getDuplicadoKey(data), dup = registrosGuardados.find(r => getDuplicadoKey(r) === key) || data;
-      const toast = document.createElement('div');
-      toast.className = 'toast-dup';
-      toast.innerHTML = `
-        <div style="display:flex; align-items:start; gap:8px;">
-          <span style="font-size:20px;">⚠️</span>
-          <div><strong>Registro duplicado</strong><br>
-          <small>Especialidad: ${dup.Especialidad}<br>IPRESS: ${dup.IPRESS}<br>Documento: ${dup.DNI}</small></div>
-        </div>
-        <div style="display:flex; gap:6px;">
-          <button onclick="editarUltimoDesdeToast()" style="flex:1; padding:6px 12px; background:#28a745; color:white; border:none; border-radius:4px; font-size:13px;">✏️ Editar último</button>
-          <button onclick="this.closest('.toast-dup').remove()" style="padding:6px 10px; background:#6c757d; color:white; border:none; border-radius:4px;">✕</button>
-        </div>
-      `;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 5000);
-      $('ipress-search').focus();
-      return { duplicate: true };
+    if (sessionStorage.getItem('skipDuplicadoCheck') !== 'true') {
+      const duplicadoHoy = isDuplicadoHoy(data);
+      if (duplicadoHoy) {
+        const agenteNombre = duplicadoHoy.agente.split(' - ')[1] || duplicadoHoy.agente;
+        const msg = `⚠️ <strong>¡Ya registrado HOY!</strong><br>` +
+                    `👤 Agente: <strong>${agenteNombre}</strong><br>` +
+                    `🕒 Hora: <strong>${duplicadoHoy.horaRegistro}</strong><br>` +
+                    `⚕️ ${data.IPRESS} • ${data.Especialidad}`;
+        mostrarAlertaDuplicado(msg);
+        $('dni').focus();
+        return { duplicate: true };
+      }
     }
-    await fetch(SHEETS_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+
+    // ⚠️ Mantiene 'no-cors' por compatibilidad (pero con logs)
+    const resp = await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
     return { success: true, data };
   } catch (err) {
-    return { error: true, message: err.message };
+    console.error('Error al enviar a Sheets:', err);
+    return { error: true, message: err.message || 'Error de red' };
   }
 }
+
+// ✅ ALERTA MEJORADA — nueva función
+function mostrarAlertaDuplicado(htmlContent) {
+  document.querySelectorAll('.toast-dup').forEach(el => el.remove());
+
+  const toast = document.createElement('div');
+  toast.className = 'toast-dup';
+  toast.style.cssText = `
+    position: fixed; top: 20px; right: 20px; 
+    background: #fff3cd; 
+    color: #856404; 
+    border: 2px solid #ffc107; 
+    padding: 16px 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2); 
+    font-weight: 700; 
+    z-index: 10000; 
+    max-width: 380px; 
+    animation: slideInRight 0.4s, shake 0.5s 0.2s, fadeOutDown 0.4s 4.5s forwards;
+    text-align: left;
+  `;
+
+  toast.innerHTML = `
+    <div style="display:flex; align-items:start; gap:12px;">
+      <span style="font-size:28px; animation: pulse 1.5s infinite;">⚠️</span>
+      <div>${htmlContent}</div>
+    </div>
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <button onclick="editarUltimoDesdeToast()" 
+              style="flex:1; padding:8px 12px; background:#28a745; color:white; border:none; border-radius:6px; font-weight:700; font-size:14px;">
+        ✏️ Editar último
+      </button>
+      <button onclick="this.closest('.toast-dup').remove()" 
+              style="padding:8px 12px; background:#dc3545; color:white; border:none; border-radius:6px; font-weight:700;">
+        ✕ Cerrar
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(toast);
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+  `;
+  document.head.appendChild(style);
+}
+
 window.editarUltimoDesdeToast = function() {
   const b = $('btnEditarUltimo');
   if (b.style.display !== 'none') b.click();
@@ -1428,21 +1399,24 @@ $('btnGuardar').addEventListener('click', async function(e){
   e.preventDefault();
   document.querySelectorAll('.status-msg').forEach(el => el.remove());
   if (!validateForm()) return;
-  
+
   const b = $('btnGuardar');
   b.classList.add('loading'); b.disabled = true;
-  
+
   ['agente','supervisor','tipoDoc','dni','nombres','fechaNacimiento','sexo','ipress','espe','obsSelect','cel1'].forEach(id => showSuccessField(id, '✅ Listo'));
   if ($('obsSelect').value === 'OTRO') showSuccessField('obs', '✅ Detalle');
   if ($('cel2').value.trim()) showSuccessField('cel2', '✅ Listo');
-  
+
   const r = await enviarAGoogleSheets();
+
   setTimeout(() => {
     b.classList.remove('loading'); b.disabled = false;
     if (r.duplicate) return;
+
     if (r.success) {
       showToast("✅ Registro guardado", true);
       ultimoRegistroGuardado = guardarEnCache(r.data);
+      sessionStorage.removeItem('skipDuplicadoCheck'); // ✅ clave: limpia tras guardar
       mostrarBotonEditarTemporal();
       setTimeout(() => {
         const a = localStorage.getItem('AGENTE'), s = localStorage.getItem('SUPERVISOR');
@@ -1455,11 +1429,13 @@ $('btnGuardar').addEventListener('click', async function(e){
         document.querySelectorAll('input, select').forEach(el => el.classList.remove('success', 'incomplete', 'error-field'));
         actualizarRegistro();
       }, 1000);
-    } else showToast("❌ Error al guardar", false);
+    } else {
+      showToast(`❌ Error: ${r.message || 'no especificado'}`, false);
+    }
   }, 600);
 });
 
-// 🔍 Buscadores robustos
+// 🔍 Buscadores (sin cambios)
 function initSearcher(sid, id, rid) {
   const s = $(sid), i = $(id), r = $(rid), opts = Array.from(i.options).map(o => ({v:o.value, t:o.text}));
   s.addEventListener('input', function() {
@@ -1517,12 +1493,10 @@ function initSearcher(sid, id, rid) {
     }
   });
 }
-
 initSearcher('agente-search', 'agente', 'agente-search-results');
 initSearcher('supervisor-search', 'supervisor', 'supervisor-search-results');
 initSearcher('ipress-search', 'ipress', 'ipress-search-results');
 initSearcher('espe-search', 'espe', 'espe-search-results');
-
 document.addEventListener('DOMContentLoaded', function() {
   ['agente','supervisor','ipress','espe'].forEach(id => {
     $(id).addEventListener('change', function() {
@@ -1532,18 +1506,13 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-
-  
-// Nombres editable — ✅ PERMITE  (U+0081)
+// Nombres editable — ✅ sin \u0081
 $('nombres').addEventListener('input', function() {
   if (!this.readOnly) {
-    this.value = this.value.replace(/[^a-zA-Z\sÑñÁáÉéÍíÓóÚúÜü\u0081]/g, '').toUpperCase();
+    this.value = this.value.replace(/[^a-zA-Z\sÑñÁáÉéÍíÓóÚúÜü‘\-]/g, '').toUpperCase();
   }
 });
 
-
-
-  
 // Nuevo
 $('btnNuevo').addEventListener('click', function(e) {
   e.preventDefault();
@@ -1558,7 +1527,7 @@ $('btnNuevo').addEventListener('click', function(e) {
   actualizarRegistro();
 });
 
-// ✅ Toast mejorado
+// Toast mejorado
 function showToast(msg, ok = true) {
   const toast = document.createElement('div');
   toast.style.cssText = `
@@ -1583,27 +1552,3 @@ function showToast(msg, ok = true) {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
